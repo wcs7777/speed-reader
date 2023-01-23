@@ -35,19 +35,11 @@ export default class SpeedReader extends HTMLDivElement {
 	}
 
 	static build(text, wordsPerMinute, wordsPerChunk) {
-		const chunkLength = wordsPerChunk * SpeedReader.averageWordSize;
-		const speedReader = document.createElement(
+		return document.createElement(
 			SpeedReader.extendingTagName,
 			{ is: SpeedReader.customTagName },
-		);
-		speedReader.wordsPerMinute = wordsPerMinute;
-		speedReader.paragraphs = splitParagraphs(text)
-			.map((paragraph) => {
-				return ParagraphSpeedReader.build(
-					splitParagraphChunks(paragraph, chunkLength).map(ChunkText.build),
-				);
-			});
-		return speedReader;
+		)
+			.newText(text, wordsPerMinute, wordsPerChunk);
 	}
 
 	constructor() {
@@ -95,6 +87,18 @@ export default class SpeedReader extends HTMLDivElement {
 
 	get hasPreviousParagraph() {
 		return this._paragraphs.hasPrevious;
+	}
+
+	newText(text, wordsPerMinute, wordsPerChunk) {
+		const chunkLength = wordsPerChunk * SpeedReader.averageWordSize;
+		this.wordsPerMinute = wordsPerMinute;
+		this.paragraphs = splitParagraphs(text)
+			.map((paragraph) => {
+				return ParagraphSpeedReader.build(
+					splitParagraphChunks(paragraph, chunkLength).map(ChunkText.build),
+				);
+			});
+		return this;
 	}
 
 	updateCharactersPerSecond() {

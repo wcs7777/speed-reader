@@ -76,5 +76,4 @@ export default class ChunkText extends HTMLSpanElement {
 			value,
 		);
 	}
-
 }
