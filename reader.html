@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Speed Reader</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<main class="content">
+		<div id="controls" class="controls">
+			<button id="new-text" class="button">New Text</button>
+			<button id="read" class="button" data-is-paused="false">Read</button>
+			<button id="settings" class="button">Settings</button>
+		</div>
+		<textarea
+			id="input-text"
+			class="input-text"
+			name="input-text"
+			cols="80"
+			rows="20"
+		>
+		</textarea>
+	</main>
+	<script type="module" src="reader.js"></script>
+</body>
+</html>

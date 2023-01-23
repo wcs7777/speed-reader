@@ -1,0 +1,66 @@
+body {
+	font: 16px/1.4 Arial, sans-serif;
+	background-color: hsl(0, 0%, 95.2%);
+}
+
+.content {
+	width: 90%;
+	height: 90%;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin: 0 auto;
+	padding: 10px;
+}
+
+.speed-reader {
+	background-color: white;
+	color: grey;
+	padding: 10px;
+	font: 18px/1.6 Georgia, serif;
+}
+
+.controls {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: flex-end;
+	gap: 20px;
+}
+
+.controls .button {
+	flex-basis: 8rem;
+}
+
+.controls #read.button {
+	height: 3.5em;
+	background-color: hsl(17.4, 81.2%, 83.3%);
+}
+
+.controls #read.button:hover {
+	background-color: hsl(17.4, 81.2%, 63.3%);
+}
+
+.input-text {
+	border: 1px solid hsl(0, 0%, 90.2%);
+}
+
+.button {
+	height: 3rem;
+	background-color: hsl(240, 28%, 85.3%);
+	border: none;
+	font-size: 16px;
+}
+
+.button:hover {
+	cursor: pointer;
+	background-color: hsl(240, 28%, 65.3%);
+}
+
+.highlight {
+	color: black;
+}
+
+.hide {
+	display: none;
+}
