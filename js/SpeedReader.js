@@ -46,6 +46,8 @@ export default class SpeedReader extends HTMLDivElement {
 		super();
 		this._paragraphs = new BoundedList();
 		this._wordsPerMinute = 300;
+		this._slightPauseEndPhrase = false;
+		this._paused = false;
 		this.updateCharactersPerSecond();
 		this.classList.add("speed-reader");
 	}
@@ -61,6 +63,22 @@ export default class SpeedReader extends HTMLDivElement {
 
 	get charactersPerSecond() {
 		return this._charactersPerSecond;
+	}
+
+	get slightPauseEndPhrase() {
+		return this._slightPauseEndPhrase;
+	}
+
+	set slightPauseEndPhrase(enabled) {
+		this._slightPauseEndPhrase = enabled;
+	}
+
+	get paused() {
+		return this._paused;
+	}
+
+	set paused(is) {
+		this._paused = is;
 	}
 
 	get paragraphs() {
@@ -133,6 +151,12 @@ export default class SpeedReader extends HTMLDivElement {
 				);
 			}
 			paragraph.unhighlightCurrentChunk();
+			if (this.slightPauseEndPhrase) {
+				await sleep(300);
+			}
+			while (this.paused) {
+				await sleep(100);
+			}
 		}
 	}
 }
