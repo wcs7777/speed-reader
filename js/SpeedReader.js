@@ -21,19 +21,6 @@ export default class SpeedReader extends HTMLDivElement {
 		return 5.7;
 	}
 
-	static selfDefine() {
-		const isDefined = (
-			customElements.get(SpeedReader.customTagName) !== undefined
-		);
-		if (!isDefined) {
-			customElements.define(
-				SpeedReader.customTagName,
-				SpeedReader,
-				{ extends: SpeedReader.extendingTagName },
-			);
-		}
-	}
-
 	static build(text, wordsPerMinute, wordsPerChunk) {
 		return document.createElement(
 			SpeedReader.extendingTagName,
@@ -46,6 +33,7 @@ export default class SpeedReader extends HTMLDivElement {
 		super();
 		this._paragraphs = new BoundedList();
 		this._wordsPerMinute = 300;
+		this._charactersPerSecond = 1;
 		this._slightPauseEndPhrase = false;
 		this._paused = false;
 		this.updateCharactersPerSecond();
@@ -159,4 +147,15 @@ export default class SpeedReader extends HTMLDivElement {
 			}
 		}
 	}
+}
+
+const isDefined = (
+	customElements.get(SpeedReader.customTagName) !== undefined
+);
+if (!isDefined) {
+	customElements.define(
+		SpeedReader.customTagName,
+		SpeedReader,
+		{ extends: SpeedReader.extendingTagName },
+	);
 }

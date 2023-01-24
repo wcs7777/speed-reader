@@ -7,19 +7,6 @@ export default class ChunkText extends HTMLSpanElement {
 		return "span";
 	}
 
-	static selfDefine() {
-		const isDefined = (
-			customElements.get(ChunkText.customTagName) !== undefined
-		);
-		if (!isDefined) {
-			customElements.define(
-				ChunkText.customTagName,
-				ChunkText,
-				{ extends: ChunkText.extendingTagName },
-			);
-		}
-	}
-
 	static get isHighlightedAttribute() {
 		return "data-is-highlighted";
 	}
@@ -76,4 +63,15 @@ export default class ChunkText extends HTMLSpanElement {
 			value,
 		);
 	}
+}
+
+const isDefined = (
+	customElements.get(ChunkText.customTagName) !== undefined
+);
+if (!isDefined) {
+	customElements.define(
+		ChunkText.customTagName,
+		ChunkText,
+		{ extends: ChunkText.extendingTagName },
+	);
 }

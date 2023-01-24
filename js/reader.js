@@ -1,11 +1,6 @@
-import ChunkText from "./ChunkText.js";
-import ParagraphSpeedReader from "./ParagraphSpeedReader.js";
 import SpeedReader from "./SpeedReader.js";
 import { $, $$, byId } from "./utils.js";
 
-ChunkText.selfDefine();
-ParagraphSpeedReader.selfDefine();
-SpeedReader.selfDefine();
 document.addEventListener("DOMContentLoaded", main);
 
 function main() {

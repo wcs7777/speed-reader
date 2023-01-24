@@ -10,19 +10,6 @@ export default class ParagraphSpeedReader extends HTMLParagraphElement {
 		return "p";
 	}
 
-	static selfDefine() {
-		const isDefined = (
-			customElements.get(ParagraphSpeedReader.customTagName) !== undefined
-		);
-		if (!isDefined) {
-			customElements.define(
-				ParagraphSpeedReader.customTagName,
-				ParagraphSpeedReader,
-				{ extends: ParagraphSpeedReader.extendingTagName },
-			);
-		}
-	}
-
 	static get currentChunkIndexAttribute() {
 		return "data-current-chunk-index";
 	}
@@ -114,4 +101,15 @@ export default class ParagraphSpeedReader extends HTMLParagraphElement {
 	unhighlightCurrentChunk() {
 		return this.currentChunk.isHighlighted = false;
 	}
+}
+
+const isDefined = (
+	customElements.get(ParagraphSpeedReader.customTagName) !== undefined
+);
+if (!isDefined) {
+	customElements.define(
+		ParagraphSpeedReader.customTagName,
+		ParagraphSpeedReader,
+		{ extends: ParagraphSpeedReader.extendingTagName },
+	);
 }
