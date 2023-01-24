@@ -5,7 +5,8 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Speed Reader</title>
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 	<main class="content">
@@ -14,15 +15,10 @@
 			<button id="read" class="button" data-is-paused="false">Read</button>
 			<button id="settings" class="button">Settings</button>
 		</div>
-		<textarea
-			id="input-text"
-			class="input-text"
-			name="input-text"
-			cols="80"
-			rows="20"
-		>
-		</textarea>
+		<div class="input-text">
+			<textarea id="input-text" name="input-text"></textarea>
+		</div>
 	</main>
-	<script type="module" src="reader.js"></script>
+	<script type="module" src="js/reader.js"></script>
 </body>
 </html>

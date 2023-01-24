@@ -3,6 +3,16 @@ body {
 	background-color: hsl(0, 0%, 95.2%);
 }
 
+textarea {
+	border: none;
+	overflow: auto;
+	outline: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	resize: none;
+}
+
 .content {
 	width: 90%;
 	height: 90%;
@@ -42,6 +52,8 @@ body {
 }
 
 .input-text {
+	height: 400px;
+	width: 900px;
 	border: 1px solid hsl(0, 0%, 90.2%);
 }
 
