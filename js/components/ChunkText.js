@@ -1,41 +1,33 @@
-export default class ChunkText extends HTMLSpanElement {
-	static get customTagName() {
-		return "chunk-text";
-	}
+import { tag } from "../utils/dom.js";
+import { boolEqualsLoose } from "../utils/mixed.js";
 
-	static get extendingTagName() {
-		return "span";
-	}
-
-	static get isHighlightedAttribute() {
-		return "data-is-highlighted";
-	}
-
-	static build(text) {
-		const chunkText = document.createElement(
-			ChunkText.extendingTagName,
-			{ is: ChunkText.customTagName },
-		);
-		chunkText.text = text;
-		return chunkText;
-	}
-
-	static get observedAttributes() {
-		return [ChunkText.isHighlightedAttribute];
-	}
+export class ChunkText extends HTMLSpanElement {
 
 	constructor() {
 		super();
-		this.isHighlighted = false;
-		this._text = "";
+		this.text = this.text ?? "";
+		this.highlightColor = this.highlightColor ?? "black";
+		this.isHighlighted = this.isHighlighted ?? false;
+	}
+
+	connectedCallback() {
+		this.updateColor();
+	}
+
+	static get attrs() {
+		return {
+			highlightColor: "highlight-color",
+			isHighlighted: "is-highlighted",
+		};
+	}
+
+	static get observedAttributes() {
+		return Object.values(ChunkText.attrs);
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		if (name === ChunkText.isHighlightedAttribute) {
-			this.classList.toggle(
-				"highlight",
-				newValue !== "false" && newValue !== false,
-			);
+		if (oldValue !== newValue) {
+			this.updateColor();
 		}
 	}
 
@@ -43,35 +35,48 @@ export default class ChunkText extends HTMLSpanElement {
 		return this.textContent;
 	}
 
-	set text(value) {
-		return this.textContent = value;
+	set text(newText) {
+		this.textContent = newText.trim();
 	}
 
-	get length() {
-		return this.textContent.length;
+	get highlightColor() {
+		return this.getAttribute(ChunkText.attrs.highlightColor);
+	}
+
+	set highlightColor(color) {
+		if (color !== this.highlightColor) {
+			this.setAttribute(ChunkText.attrs.highlightColor, color);
+		}
 	}
 
 	get isHighlighted() {
-		return this.getAttribute(
-			ChunkText.isHighlightedAttribute,
+		return boolEqualsLoose(
+			true, this.getAttribute(ChunkText.attrs.isHighlighted)
 		);
 	}
 
-	set isHighlighted(value) {
-		return this.setAttribute(
-			ChunkText.isHighlightedAttribute,
-			value,
-		);
+	set isHighlighted(highlighted) {
+		if (!boolEqualsLoose(highlighted, this.isHighlighted)) {
+			this.setAttribute(ChunkText.attrs.isHighlighted, highlighted);
+		}
 	}
+
+	updateColor() {
+		this.style.color = this.isHighlighted ? this.highlightColor : "inherit";
+	}
+
 }
 
-const isDefined = (
-	customElements.get(ChunkText.customTagName) !== undefined
-);
-if (!isDefined) {
-	customElements.define(
-		ChunkText.customTagName,
-		ChunkText,
-		{ extends: ChunkText.extendingTagName },
-	);
+export function buildChunkText(text, highlightColor, isHighlighted) {
+	return tag({
+		tagName: "span",
+		is: "chunk-text",
+		textContent: text,
+		attributes: {
+			[ChunkText.attrs.highlightColor]: highlightColor,
+			[ChunkText.attrs.isHighlighted]: isHighlighted,
+		},
+	});
 }
+
+customElements.define("chunk-text", ChunkText, { extends: "span" });
