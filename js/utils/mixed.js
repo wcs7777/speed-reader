@@ -9,3 +9,14 @@ export function toArray(value) {
 export function sleep(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+export function boolEqualsLoose(left, right) {
+	const [a, b] = [left, right].map((x) => {
+		return (
+			x === "true" ? true :
+			x === "false" ? false :
+			x == true
+		);
+	});
+	return a === b;
+}
