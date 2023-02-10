@@ -4,9 +4,9 @@ import {
 	chunkMilliseconds,
 	splitParagraphChunks,
 	splitParagraphs
-} from "./utils/alphanumeric.js";
-import BoundedList from "./utils/BoundedList.js";
-import { sleep } from "./utils/mixed.js";
+} from "../utils/alphanumeric.js";
+import BoundedList from "../utils/BoundedList.js";
+import { sleep } from "../utils/mixed.js";
 
 export default class SpeedReader extends HTMLDivElement {
 	static get customTagName() {
