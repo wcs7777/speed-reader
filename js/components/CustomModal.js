@@ -1,4 +1,4 @@
-import { $$, createTemplate, templateContent } from "../utils/dom.js";
+import { $$, createTemplate, tag, templateContent } from "../utils/dom.js";
 
 const template = createTemplate(`
 	<style>
@@ -33,8 +33,11 @@ const template = createTemplate(`
 	<div class="modal-backdrop" data-modal-closer="modal"></div>
 	<slot></slot>
 `);
+const attrs = {
+	name: "data-modal",
+};
 
-export default class CustomModal extends HTMLElement {
+export class CustomModal extends HTMLElement {
 	constructor() {
 		super();
 		this.attachShadow({ mode: "open" });
@@ -50,23 +53,21 @@ export default class CustomModal extends HTMLElement {
 		for (const closer of this.closers(this.shadowRoot, defaultName)) {
 			closer.dataset.modalCloser = name;
 		}
-		this.dataset.modal = name;
+		this.setAttribute(attrs.name, name);
 	}
 
 	static get observedAttributes() {
-		return ["data-modal"];
+		return Object.values(attrs);
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		if (name === "data-modal") {
-			if (oldValue !== newValue) {
-				this.name = newValue;
-			}
+		if (name === attrs.name && oldValue !== newValue) {
+			this.name = newValue;
 		}
 	}
 
 	get name() {
-		return this.dataset.modal;
+		return this.getAttribute(attrs.name);
 	}
 
 	set name(newName) {
@@ -78,7 +79,7 @@ export default class CustomModal extends HTMLElement {
 		for (const closer of closers) {
 			closer.dataset.modalCloser = newName;
 		}
-		this.dataset.modal = newName;
+		this.setAttribute(attrs.name, newName);
 		this.listenOpeners();
 		this.listenClosers();
 	}
@@ -119,6 +120,16 @@ export default class CustomModal extends HTMLElement {
 		}
 	}
 
+}
+
+export function buildCustomModal(name, modalBody) {
+	return tag({
+		tagName: "custom-modal",
+		attributes: {
+			[attrs.name]: name,
+		},
+		children: modalBody,
+	});
 }
 
 customElements.define("custom-modal", CustomModal);
