@@ -1,4 +1,4 @@
-import { $$, createTemplate, templateContent } from "./utils.js";
+import { $$, createTemplate, templateContent } from "./utils/dom.js";
 
 const template = createTemplate(`
 	<style>

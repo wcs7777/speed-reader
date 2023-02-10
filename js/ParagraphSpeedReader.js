@@ -1,5 +1,5 @@
-import { threshold } from "./utils.js";
-import BoundedList from "./BoundedList.js";
+import { threshold } from "./utils/alphanumeric.js";
+import BoundedList from "./utils/BoundedList.js";
 
 export default class ParagraphSpeedReader extends HTMLParagraphElement {
 	static get customTagName() {
