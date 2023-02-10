@@ -1,6 +1,11 @@
 import { tag } from "../utils/dom.js";
 import { boolEqualsLoose } from "../utils/mixed.js";
 
+const attrs = {
+	highlightColor: "highlight-color",
+	isHighlighted: "is-highlighted",
+};
+
 export class ChunkText extends HTMLSpanElement {
 
 	constructor() {
@@ -14,15 +19,8 @@ export class ChunkText extends HTMLSpanElement {
 		this.updateColor();
 	}
 
-	static get attrs() {
-		return {
-			highlightColor: "highlight-color",
-			isHighlighted: "is-highlighted",
-		};
-	}
-
 	static get observedAttributes() {
-		return Object.values(ChunkText.attrs);
+		return Object.values(attrs);
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
@@ -40,24 +38,24 @@ export class ChunkText extends HTMLSpanElement {
 	}
 
 	get highlightColor() {
-		return this.getAttribute(ChunkText.attrs.highlightColor);
+		return this.getAttribute(attrs.highlightColor);
 	}
 
 	set highlightColor(color) {
 		if (color !== this.highlightColor) {
-			this.setAttribute(ChunkText.attrs.highlightColor, color);
+			this.setAttribute(attrs.highlightColor, color);
 		}
 	}
 
 	get isHighlighted() {
 		return boolEqualsLoose(
-			true, this.getAttribute(ChunkText.attrs.isHighlighted)
+			true, this.getAttribute(attrs.isHighlighted)
 		);
 	}
 
 	set isHighlighted(highlighted) {
 		if (!boolEqualsLoose(highlighted, this.isHighlighted)) {
-			this.setAttribute(ChunkText.attrs.isHighlighted, highlighted);
+			this.setAttribute(attrs.isHighlighted, highlighted);
 		}
 	}
 
@@ -73,8 +71,8 @@ export function buildChunkText(text, highlightColor, isHighlighted) {
 		is: "chunk-text",
 		textContent: text,
 		attributes: {
-			[ChunkText.attrs.highlightColor]: highlightColor,
-			[ChunkText.attrs.isHighlighted]: isHighlighted,
+			[attrs.highlightColor]: highlightColor,
+			[attrs.isHighlighted]: isHighlighted,
 		},
 	});
 }
