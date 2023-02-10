@@ -1,18 +1,18 @@
-body {
-	background-color: hsl(0, 0%, 95.2%);
-	font: 16px/1.4 Arial, sans-serif;
+:root {
+	--minor-border-radius: 0.375em;
+  box-sizing: border-box;
+	font: 16px/1.5 Arial, sans-serif;
 }
 
-textarea {
-	width: 100%;
-	height: 100%;
-	border: none;
-	outline: none;
-	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
-	box-shadow: none;
-	resize: none;
-	overflow: auto;
+*, *::before, *::after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+
+body {
+	background-color: hsl(0, 0%, 95.2%);
 }
 
 .content {
@@ -20,62 +20,34 @@ textarea {
 	flex-direction: column;
 	align-items: center;
 	gap: 15px;
-	width: 90%;
-	height: 90%;
 	margin: 0 auto;
 	padding: 10px;
-}
-
-.wrapper-input-text {
-	height: 400px;
-	width: 900px;
-	padding: 10px;
-	background-color: hsl(0, 0%, 100%);
-}
-
-.speed-reader {
-	padding: 10px;
-	background-color: hsl(0, 0%, 100%);
-	color: hsl(0, 0%, 50.2%);
-	font: 18px/1.6 Georgia, serif;
-}
-
-.controls {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: flex-end;
-	gap: 20px;
-	width: 100%;
-}
-
-.controls .button {
-	flex-basis: 8rem;
-}
-
-.controls #read.button {
-	height: 3.2em;
-	background-color: hsl(17.4, 81.2%, 83.3%);
-}
-
-.controls #read.button:hover {
-	background-color: hsl(17.4, 81.2%, 63.3%);
+	width: 90%;
+	height: 90%;
 }
 
 .button {
-	min-height: 2.6rem;
-	background-color: hsl(240, 28%, 85.3%);
-	border: none;
-	font-size: 16px;
-}
-
-.button:hover {
-	background-color: hsl(240, 28%, 65.3%);
+	transition: background-color 0.3s ease;
 	cursor: pointer;
+	box-sizing: content-box;
+	border: none;
+	border-radius: var(--minor-border-radius);
+	background-color: hsl(230, 65%, 30%);
+	padding: 0.25rem 0.76rem;
+	min-width: 5.625em;
+	color: white;
 }
 
-.highlight {
-	color: hsl(0, 0%, 0%);
+.button:is(:hover, :focus) {
+	background-color: hsl(230, 65%, 50%);
+}
+
+.buttons {
+	align-self: center;
+}
+
+.buttons > .button + .button {
+	margin-left: 0.625em;
 }
 
 .hide {
