@@ -29,30 +29,48 @@ export class ChunkText extends HTMLSpanElement {
 		}
 	}
 
+	/**
+	 * @return {string}
+	 */
 	get text() {
 		return this.textContent;
 	}
 
+	/**
+	 * @param {string} newText
+	 */
 	set text(newText) {
 		this.textContent = newText.trim();
 	}
 
+	/**
+	 * @returns {string}
+	 */
 	get highlightColor() {
 		return this.getAttribute(attrs.highlightColor);
 	}
 
+	/**
+	 * @param {string} color
+	 */
 	set highlightColor(color) {
 		if (color !== this.highlightColor) {
 			this.setAttribute(attrs.highlightColor, color);
 		}
 	}
 
+	/**
+	 * @returns {boolean}
+	 */
 	get isHighlighted() {
 		return boolEqualsLoose(
 			true, this.getAttribute(attrs.isHighlighted)
 		);
 	}
 
+	/**
+	 * @param {string|boolean} highlighted
+	 */
 	set isHighlighted(highlighted) {
 		if (!boolEqualsLoose(highlighted, this.isHighlighted)) {
 			this.setAttribute(attrs.isHighlighted, highlighted);
@@ -65,6 +83,12 @@ export class ChunkText extends HTMLSpanElement {
 
 }
 
+/**
+ * @param {string} text
+ * @param {string} highlightColor
+ * @param {boolean} isHighlighted
+ * @returns {ChunkText}
+ */
 export function buildChunkText(text, highlightColor, isHighlighted) {
 	return tag({
 		tagName: "span",
