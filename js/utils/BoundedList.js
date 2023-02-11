@@ -36,7 +36,7 @@ export default class BoundedList {
 	 * @param {number} i
 	 */
 	set index(i) {
-		this._index = threshold(0, i, this._list.length);
+		this._index = threshold(0, i, this._list.length - 1);
 	}
 
 	/**
