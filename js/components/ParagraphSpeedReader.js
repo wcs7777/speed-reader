@@ -1,115 +1,151 @@
-import { threshold } from "../utils/alphanumeric.js";
 import BoundedList from "../utils/BoundedList.js";
+import { $$, tag } from "../utils/dom.js";
+import { boolEqualsLoose } from "../utils/mixed.js";
+import { ChunkText } from "./ChunkText.js";
 
-export default class ParagraphSpeedReader extends HTMLParagraphElement {
-	static get customTagName() {
-		return "paragraph-speed-reader";
-	}
+const attrs = {
+	currentChunkTextIndex: "data-current-chunk-text-index",
+};
 
-	static get extendingTagName() {
-		return "p";
-	}
-
-	static get currentChunkIndexAttribute() {
-		return "data-current-chunk-index";
-	}
-
-	static build(chunks) {
-		const paragraph = document.createElement(
-			ParagraphSpeedReader.extendingTagName,
-			{ is: ParagraphSpeedReader.customTagName },
-		);
-		paragraph.chunks = chunks;
-		return paragraph;
-	}
-
-	static get observedAttributes() {
-		return [ParagraphSpeedReader.currentChunkIndexAttribute];
-	}
+export class ParagraphSpeedReader extends HTMLParagraphElement {
 
 	constructor() {
 		super();
-		this._chunks = new BoundedList();
+		this._chunkTexts = new BoundedList($$("[is=chunk-text]", this));
+	}
+
+	static get observedAttributes() {
+		return Object.values(attrs);
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		if (name === ParagraphSpeedReader.currentChunkIndexAttribute) {
-			const oldChunkIndex = threshold(0, oldValue, this.chunks.length);
-			const newChunkIndex = threshold(0, newValue, this.chunks.length);
-			if (!isNaN(oldChunkIndex)) {
-				this.chunks[oldChunkIndex].isHighlighted = false;
-			}
-			if (!isNaN(newChunkIndex)) {
-				this.chunks[newChunkIndex].isHighlighted = true;
-			}
+		if (name === attrs.currentChunkTextIndex && oldValue !== newValue) {
+			this.currentChunkTextIndex = newValue;
 		}
 	}
 
-	get chunks() {
-		return this._chunks.list;
+	/**
+	 * @returns {ChunkText[]}
+	 */
+	get chunkTexts() {
+		return this._chunkTexts.list;
 	}
 
-	set chunks(list) {
-		this.chunks.forEach((chunk) => chunk.remove());
-		this._chunks.clear();
-		list.forEach((chunk) => this.addChunk(chunk));
+	/**
+	 * @param {ChunkText[]} list
+	 */
+	set chunkTexts(list) {
+		for (const chunkText of this.chunkTexts) {
+			chunkText.remove();
+		}
+		this._chunkTexts.clear();
+		for (const item of list) {
+			this.addChunkText(item);
+		}
 	}
 
-	get currentChunkIndex() {
-		return this._chunks.index;
+	/**
+	 * @returns {boolean}
+	 */
+	get isCurrentChunkTextHighlighted() {
+		const ct = this.currentChunkText;
+		return ct ? ct.isHighlighted : false;
 	}
 
-	set currentChunkIndex(index) {
-		this._chunks.index = index;
-		this.setAttribute(
-			ParagraphSpeedReader.currentChunkIndexAttribute,
-			this.currentChunkIndex,
-		);
+	/**
+	 * @param {string|number} highlighted
+	 */
+	set isCurrentChunkTextHighlighted(highlighted) {
+		const ct = this.currentChunkText;
+		if (ct && !boolEqualsLoose(ct.isHighlighted, highlighted)) {
+			ct.isHighlighted = highlighted;
+		}
 	}
 
-	get currentChunk() {
-		return this._chunks.current;
+	/**
+	 * @returns {ChunkText}
+	 */
+	get currentChunkText() {
+		return this._chunkTexts.current;
 	}
 
-	get currentChunkLength() {
-		return this.currentChunk.length;
+	/**
+	 * @returns {number}
+	 */
+	get currentChunkTextIndex() {
+		return this._chunkTexts.index;
 	}
 
-	get hasNextChunk() {
-		return this._chunks.hasNext;
+	/**
+	 * @param {number} index
+	 */
+	set currentChunkTextIndex(index) {
+		if (index !== this.currentChunkTextIndex) {
+			this.isCurrentChunkTextHighlighted = false;
+			this._chunkTexts.index = index;
+			this.setAttribute(
+				attrs.currentChunkTextIndex, this._chunkTexts.index
+			);
+			this.isCurrentChunkTextHighlighted = true;
+		}
 	}
 
-	get hasPreviousChunk() {
-		return this._chunks.hasPrevious;
+	/**
+	 * @param {ChunkText} chunkText
+	 */
+	addChunkText(chunkText) {
+		this._chunkTexts.add(chunkText);
+		this.appendChild(chunkText);
 	}
 
-	addChunk(chunk) {
-		this._chunks.add(chunk);
-		this.appendChild(chunk);
+	/**
+	 * @param {number} value
+	 * @returns {ChunkText}
+	 */
+	addCurrentChunkTextIndex(value) {
+		this.currentChunkTextIndex = this.currentChunkTextIndex + value;
+		return this.currentChunkText;
 	}
 
-	nextChunk() {
-		this.currentChunkIndex = this.currentChunkIndex + 1;
-		return this.currentChunk;
+	/**
+	 * @returns {boolean}
+	 */
+	hasNextChunkText() {
+		return this._chunkTexts.hasNext();
 	}
 
-	previousChunk() {
-		this.currentChunkIndex = this.currentChunkIndex - 1;
-		return this.currentChunk;
+	/**
+	 * @returns {boolean}
+	 */
+	hasPreviousChunkText() {
+		return this._chunkTexts.hasPrevious();
 	}
 
-	unhighlightCurrentChunk() {
-		return this.currentChunk.isHighlighted = false;
+	nextChunkText() {
+		return this.addCurrentChunkTextIndex(1);
 	}
+
+	previousChunkText() {
+		return this.addCurrentChunkTextIndex(-1);
+	}
+
 }
 
-const isDefined = (
-	customElements.get(ParagraphSpeedReader.customTagName) !== undefined
+/**
+ * @param {ChunkText[]} chunkTexts
+ * @returns {ParagraphSpeedReader}
+ */
+export function buildParagraphSpeedReader(chunkTexts) {
+	return tag({
+		tagName: "p",
+		is: "paragraph-speed-reader",
+		attributes: {
+			[attrs.currentChunkTextIndex]: -1,
+		},
+		children: chunkTexts,
+	});
+}
+
+customElements.define(
+	"paragraph-speed-reader", ParagraphSpeedReader, { extends: "p" }
 );
-if (!isDefined) {
-	customElements.define(
-		ParagraphSpeedReader.customTagName,
-		ParagraphSpeedReader,
-		{ extends: ParagraphSpeedReader.extendingTagName },
-	);
-}
