@@ -1,22 +1,45 @@
-import { tag } from "../utils/dom.js";
+import defaultSettings from "../utils/defaultSettings.js";
+import { createTemplate, tag, templateContent } from "../utils/dom.js";
 import { boolEqualsLoose } from "../utils/mixed.js";
 
 const attrs = {
-	highlightColor: "highlight-color",
-	isHighlighted: "is-highlighted",
+	isHighlighted: "data-is-highlighted",
 };
+const cssVariables = {
+	highlightColor: "--chunk-text-highlight-color",
+};
+const template = createTemplate(`
+<style>
+	:host(.is-highlighted) {
+		color: var(
+			${cssVariables.highlightColor},
+			${defaultSettings.highlightColor}
+		);
+	}
+</style>
+<slot></slot>
+`);
 
 export class ChunkText extends HTMLSpanElement {
 
 	constructor() {
 		super();
+		this.attachShadow({ mode: "open" });
 		this.text = this.text ?? "";
-		this.highlightColor = this.highlightColor ?? "black";
 		this.isHighlighted = this.isHighlighted ?? false;
 	}
 
 	connectedCallback() {
+		this.shadowRoot.appendChild(templateContent(template));
 		this.updateColor();
+	}
+
+	static get attrs() {
+		return attrs;
+	}
+
+	static get cssVariables() {
+		return cssVariables;
 	}
 
 	static get observedAttributes() {
@@ -44,22 +67,6 @@ export class ChunkText extends HTMLSpanElement {
 	}
 
 	/**
-	 * @returns {string}
-	 */
-	get highlightColor() {
-		return this.getAttribute(attrs.highlightColor);
-	}
-
-	/**
-	 * @param {string} color
-	 */
-	set highlightColor(color) {
-		if (color !== this.highlightColor) {
-			this.setAttribute(attrs.highlightColor, color);
-		}
-	}
-
-	/**
 	 * @returns {boolean}
 	 */
 	get isHighlighted() {
@@ -78,24 +85,22 @@ export class ChunkText extends HTMLSpanElement {
 	}
 
 	updateColor() {
-		this.style.color = this.isHighlighted ? this.highlightColor : "inherit";
+		this.classList.toggle("is-highlighted", this.isHighlighted);
 	}
 
 }
 
 /**
  * @param {string} text
- * @param {string} highlightColor
  * @param {boolean} isHighlighted
  * @returns {ChunkText}
  */
-export function buildChunkText(text, highlightColor, isHighlighted) {
+export function buildChunkText(text, isHighlighted) {
 	return tag({
 		tagName: "span",
 		is: "chunk-text",
 		textContent: text,
 		attributes: {
-			[attrs.highlightColor]: highlightColor,
 			[attrs.isHighlighted]: isHighlighted,
 		},
 	});

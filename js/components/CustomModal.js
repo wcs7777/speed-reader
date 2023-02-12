@@ -1,41 +1,58 @@
 import { $$, createTemplate, tag, templateContent } from "../utils/dom.js";
 
-const template = createTemplate(`
-	<style>
-		:host {
-			display: none;
-			opacity: 0;
-			transition: opacity 0.3s ease;
-		}
-
-		:host(.is-open) {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			opacity: 1;
-		}
-
-		.modal-backdrop {
-			position: fixed;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			z-index: 800;
-			background-color: rgba(0, 0, 0, .5);
-		}
-
-		::slotted(*) {
-			z-index: 900;
-			overflow: auto;
-		}
-	</style>
-	<div class="modal-backdrop" data-modal-closer="modal"></div>
-	<slot></slot>
-`);
 const attrs = {
-	name: "data-modal",
+	name: "data-custom-modal",
+	opener: "data-custom-modal-opener",
+	closer: "data-custom-modal-closer",
 };
+const cssVariables = {
+	modalBackdropZIndex: "--custom-modal-backdrop-z-index",
+	modalBackdropBackgroundColor: "--custom-modal-backdrop-background-color",
+	modalBodyZIndex: "--custom-modal-body-z-index",
+};
+const defaultName = "custom-modal-default-name";
+const template = createTemplate(`
+<style>
+	:host {
+		display: none;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	:host(.is-open) {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		opacity: 1;
+	}
+
+	.modal-backdrop {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: var(
+			${cssVariables.modalBackdropZIndex},
+			800
+		);
+		background-color: var(
+			${cssVariables.modalBackdropBackgroundColor},
+			rgba(0, 0, 0, .5)
+		);
+	}
+
+	::slotted(*) {
+		z-index: var(
+			${cssVariables.modalBodyZIndex},
+			900
+		);
+		overflow: auto;
+	}
+</style>
+<div class="modal-backdrop" ${attrs.closer}="${defaultName}"></div>
+<slot></slot>
+`);
 
 export class CustomModal extends HTMLElement {
 	constructor() {
@@ -44,16 +61,23 @@ export class CustomModal extends HTMLElement {
 	}
 
 	connectedCallback() {
-		const defaultName = "modal";
 		const name = this.name ?? defaultName;
 		this.shadowRoot.appendChild(templateContent(template));
 		for (const opener of this.openers(this.shadowRoot, defaultName)) {
-			opener.dataset.modalOpener = name;
+			opener.setAttribute(attrs.opener, name);
 		}
 		for (const closer of this.closers(this.shadowRoot, defaultName)) {
-			closer.dataset.modalCloser = name;
+			closer.setAttribute(attrs.closer, name);
 		}
 		this.setAttribute(attrs.name, name);
+	}
+
+	static get attrs() {
+		return attrs;
+	}
+
+	static get cssVariables() {
+		return cssVariables;
 	}
 
 	static get observedAttributes() {
@@ -74,10 +98,10 @@ export class CustomModal extends HTMLElement {
 		const openers = [...this.openers(), ...this.openers(this.shadowRoot)];
 		const closers = [...this.closers(), ...this.closers(this.shadowRoot)];
 		for (const opener of openers) {
-			opener.dataset.modalOpener = newName;
+			opener.setAttribute(attrs.opener, newName);
 		}
 		for (const closer of closers) {
-			closer.dataset.modalCloser = newName;
+			closer.setAttribute(attrs.closer, newName);
 		}
 		this.setAttribute(attrs.name, newName);
 		this.listenOpeners();
@@ -95,11 +119,11 @@ export class CustomModal extends HTMLElement {
 	}
 
 	openers(target=document, name=this.name) {
-		return $$(`[data-modal-opener="${name}"]`, target);
+		return $$(`[${attrs.opener}="${name}"]`, target);
 	}
 
 	closers(target=document, name=this.name) {
-		return $$(`[data-modal-closer="${name}"]`, target);
+		return $$(`[${attrs.closer}="${name}"]`, target);
 	}
 
 	listenOpeners() {
