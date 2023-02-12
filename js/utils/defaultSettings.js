@@ -7,7 +7,7 @@ const defaultSettings = {
 	fontSize: 16,
 	lineHeight: 1.5,
 	fontFamily: "Arial",
-	alignment: "left",
+	textAlign: "left",
 	slightPause: true,
 };
 
