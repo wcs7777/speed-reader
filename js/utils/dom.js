@@ -79,6 +79,9 @@ export function tag({
 	children,
 }={}) {
 	const element = document.createElement(tagName, { is });
+	if (is) {
+		element.setAttribute("is", is);
+	}
 	if (id) {
 		element.id = id;
 	}
