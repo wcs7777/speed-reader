@@ -17,22 +17,23 @@ export function kebab2camel(kebab) {
 }
 
 /**
- * @param {string} paragraph
+ * @param {string[]} words
  * @param {number} chunkLength
- * @returns {string[]}
+ * @returns {string[][]}
  */
-export function splitParagraphChunks(paragraph, chunkLength) {
+function separateChunks(words, chunkLength) {
 	const chunks = [];
-	const words = splitWords(paragraph);
 	const totalWords = words.length;
 	let i = 0;
 	while (i < totalWords) {
-		let chunk = '';
-		while (i < totalWords && chunk.length < chunkLength) {
-			chunk += words[i] + ' ';
+		const currentChunk = [];
+		let chunkText = '';
+		while (i < totalWords && chunkText.length < chunkLength) {
+			chunkText += words[i] + ' ';
+			currentChunk.push(words[i]);
 			++i;
 		}
-		chunks.push(chunk);
+		chunks.push(currentChunk);
 	}
 	return chunks;
 }
