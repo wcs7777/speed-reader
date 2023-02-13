@@ -226,6 +226,13 @@ export class SpeedReader extends HTMLElement {
 	/**
 	 * @returns {boolean}
 	 */
+	isReading() {
+		return !this._paragraphs.isBeforeFirst();
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
 	hasNextParagraph() {
 		return this._paragraphs.hasNext();
 	}
