@@ -45,7 +45,7 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		if (name === attrs.currentChunkTextIndex && oldValue !== newValue) {
+		if (name === attrs.currentChunkTextIndex && oldValue != newValue) {
 			this.currentChunkTextIndex = newValue;
 		}
 	}
@@ -104,7 +104,7 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 	 * @param {number} index
 	 */
 	set currentChunkTextIndex(index) {
-		if (index !== this.currentChunkTextIndex) {
+		if (index != this.currentChunkTextIndex) {
 			this.isCurrentChunkTextHighlighted = false;
 			this._chunkTexts.index = index;
 			this.setAttribute(

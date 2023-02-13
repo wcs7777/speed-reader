@@ -90,7 +90,7 @@ export class SpeedReader extends HTMLElement {
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		if (oldValue !== newValue) {
+		if (oldValue != newValue) {
 			if (name === attrs.currentParagraphIndex) {
 				this.currentParagraphIndex = newValue;
 			} else if (name == attrs.isPaused) {
@@ -203,7 +203,7 @@ export class SpeedReader extends HTMLElement {
 	}
 
 	set currentParagraphIndex(index) {
-		if (index !== this.currentParagraphIndex) {
+		if (index != this.currentParagraphIndex) {
 			this._paragraphs.index = index;
 			this.setAttribute(
 				attrs.currentParagraphIndex, this.currentParagraphIndex

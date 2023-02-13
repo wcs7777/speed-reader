@@ -53,7 +53,7 @@ export class ChunkText extends HTMLSpanElement {
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		if (oldValue !== newValue) {
+		if (name === attrs.isHighlighted && oldValue != newValue) {
 			this.updateColor();
 		}
 	}
