@@ -14,6 +14,10 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 		this._chunkTexts = new BoundedList($$("[is=chunk-text]", this));
 	}
 
+	static get attrs() {
+		return attrs;
+	}
+
 	static get observedAttributes() {
 		return Object.values(attrs);
 	}
@@ -84,7 +88,7 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 			this.isCurrentChunkTextHighlighted = false;
 			this._chunkTexts.index = index;
 			this.setAttribute(
-				attrs.currentChunkTextIndex, this._chunkTexts.index
+				attrs.currentChunkTextIndex, this.currentChunkTextIndex
 			);
 			this.isCurrentChunkTextHighlighted = true;
 		}
@@ -121,10 +125,16 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 		return this._chunkTexts.hasPrevious();
 	}
 
+	/**
+	 * @returns {ChunkText}
+	 */
 	nextChunkText() {
 		return this.addCurrentChunkTextIndex(1);
 	}
 
+	/**
+	 * @returns {ChunkText}
+	 */
 	previousChunkText() {
 		return this.addCurrentChunkTextIndex(-1);
 	}
