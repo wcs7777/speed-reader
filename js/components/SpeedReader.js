@@ -15,6 +15,7 @@ import {
 } from "./ParagraphSpeedReader.js";
 
 const averageWordSize = 5.7;
+const paragraphMargin = 10;
 const attrs = {
 	isPaused: "data-is-paused",
 	currentParagraphIndex: "data-current-paragraph-index",
@@ -38,8 +39,13 @@ const template = createTemplate(`
 		${cssVariables.lineHeight}: ${defaultSettings.lineHeight};
 		${cssVariables.fontFamily}: ${defaultSettings.fontFamily};
 		${cssVariables.textAlign}: ${defaultSettings.textAlign};
+		${ParagraphSpeedReader.cssVariables.margin}: ${paragraphMargin}px 0;
 
+		display: block;
 		background-color: var(${cssVariables.backgroundColor});
+		padding: ${paragraphMargin}px ${paragraphMargin * 2.5}px;
+		min-width: 50px;
+		min-height: 50px;
 		color: var(${cssVariables.textColor});
 		font-size: var(${cssVariables.fontSize});
 		line-height: var(${cssVariables.lineHeight});
