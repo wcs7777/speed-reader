@@ -49,8 +49,8 @@ export default class BoundedList {
 	/**
 	 * @returns {boolean}
 	 */
-	isStarted() {
-		return this.index > -1;
+	isBeforeFirst() {
+		return this.index < 0;
 	}
 
 	/**
@@ -95,7 +95,7 @@ export default class BoundedList {
 		return this.current;
 	}
 
-	resetIndex() {
+	rewind() {
 		this.index = -1;
 	}
 }
