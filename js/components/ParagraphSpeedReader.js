@@ -169,6 +169,11 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 			inline: "nearest",
 		});
 	}
+
+	currentChunkTextLength() {
+		return this.currentChunkText?.text.length;
+	}
+
 }
 
 /**
