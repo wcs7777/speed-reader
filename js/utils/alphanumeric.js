@@ -72,7 +72,7 @@ export function chunkMilliseconds(chunkLength, charactersPerSecond) {
  * @param {number} value
  * @returns {number}
  */
-export function findInRanges(ranges, value) {
+export function findIndexInRanges(ranges, value) {
 	let begin = 0;
 	let end = ranges.length - 1;
 	while (begin <= end) {
