@@ -1,18 +1,23 @@
 import {
+	chunkMilliseconds,
 	separateChunks,
 	splitParagraphs,
 	splitWords
 } from "../utils/alphanumeric.js";
 import BoundedList from "../utils/BoundedList.js";
 import defaultSettings from "../utils/defaultSettings.js";
-import { byId, createTemplate, tag, templateContent } from "../utils/dom.js";
-import { buildChunkText } from "./ChunkText.js";
-import { buildParagraphSpeedReader } from "./ParagraphSpeedReader.js";
+import { createTemplate, tag, templateContent } from "../utils/dom.js";
+import { boolEqualsLoose, sleep } from "../utils/mixed.js";
+import { buildChunkText, ChunkText } from "./ChunkText.js";
+import {
+	buildParagraphSpeedReader,
+	ParagraphSpeedReader
+} from "./ParagraphSpeedReader.js";
 
 const averageWordSize = 5.7;
 const attrs = {
-	isOpened: "data-is-opened",
 	isPaused: "data-is-paused",
+	currentParagraphIndex: "data-current-paragraph-index",
 };
 const cssVariables = {
 	highlightColor: ChunkText.cssVariables.highlightColor,
@@ -49,17 +54,19 @@ export class SpeedReader extends HTMLElement {
 
 	constructor() {
 		super();
-		this.attachShadow({ mode: "open" });
-		this.paragraphsId = "paragraphs";
-		this.charactersPerSeconds = 1;
-		this.chunkLength = averageWordSize;
+		this.attachShadow({ mode: "open" }).appendChild(
+			templateContent(template),
+		);
 		this._paragraphs = new BoundedList();
-		this._settings = defaultSettings;
-		this._text = this.textContent.trim?.() || "";
+		this.isPaused = this.isPaused ?? false;
+		this.settings = defaultSettings;
 	}
 
 	connectedCallback() {
- 		this.shadowRoot.appendChild(templateContent(template));
+		this.text = this.textContent.trim?.() ?? "";
+		if (!this.isPaused) {
+			this.startReading().catch(console.error);
+		}
 	}
 
 	static get attrs() {
@@ -68,6 +75,58 @@ export class SpeedReader extends HTMLElement {
 
 	static get cssVariables() {
 		return cssVariables;
+	}
+
+	static get observedAttributes() {
+		return Object.values(attrs);
+	}
+
+	attributeChangedCallback(name, oldValue, newValue) {
+		if (oldValue !== newValue) {
+			if (name === attrs.currentParagraphIndex) {
+				this.currentParagraphIndex = newValue;
+			} else if (name == attrs.isPaused) {
+				this.isPaused = newValue;
+			}
+		}
+	}
+
+	async startReading() {
+		while (this.hasNextParagraph()) {
+			const paragraph = this.nextParagraph();
+			while (paragraph.hasNextChunkText()) {
+				await sleep(
+					chunkMilliseconds(
+						paragraph.nextChunkText().text.length,
+						this.charactersPerSecond,
+					)
+				);
+				while (this.isPaused) {
+					await sleep(300);
+				}
+			}
+			if (this.settings.slightPause) {
+				await sleep(300);
+			}
+			paragraph.isCurrentChunkTextHighlighted = false;
+		}
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	get isPaused() {
+		return boolEqualsLoose(true, this.getAttribute(attrs.isPaused));
+	}
+
+	/**
+	 * @param {boolean} paused
+	 */
+	set isPaused(paused) {
+		if (!boolEqualsLoose(this._isPaused, paused)) {
+			this._isPaused = paused;
+			this.setAttribute(attrs.isPaused, paused);
+		}
 	}
 
 	get settings() {
@@ -85,27 +144,12 @@ export class SpeedReader extends HTMLElement {
 		this.chunkLength = this.settings.wordsPerChunk * averageWordSize;
 	}
 
-	get paragraphs() {
-		return this._paragraphs;
-	}
-
-	set paragraphs(newParagraphs) {
-		this._paragraphs.list = newParagraphs;
-		byId(this.paragraphsId)?.remove();
-		this.appendChild(
-			tag({
-				tagName: "div",
-				id: this.paragraphsId,
-				children: newParagraphs,
-			}),
-		);
-	}
-
 	get text() {
 		return this._text;
 	}
 
 	set text(newText) {
+		this.textContent = "";
 		this._text = newText;
 		this.paragraphs = splitParagraphs(this.text)
 			.map((paragraph) => {
@@ -118,17 +162,96 @@ export class SpeedReader extends HTMLElement {
 			});
 	}
 
+	get paragraphs() {
+		return this._paragraphs;
+	}
+
+	set paragraphs(newParagraphs) {
+		while (this.lastChild) {
+			this.lastChild.remove();
+		}
+		this._paragraphs.list = newParagraphs;
+		this.appendChild(tag({ tagName: "span", children: newParagraphs }));
+	}
+
+	/**
+	 * @returns {ParagraphSpeedReader}
+	 */
+	get currentParagraph() {
+		return this._paragraphs.current;
+	}
+
+	/**
+	 * @returns {number}
+	 */
+	get currentParagraphIndex() {
+		return this._paragraphs.index;
+	}
+
+	set currentParagraphIndex(index) {
+		if (index !== this.currentParagraphIndex) {
+			this._paragraphs.index = index;
+			this.setAttribute(
+				attrs.currentParagraphIndex, this.currentParagraphIndex
+			);
+		}
+	}
+
+	/**
+	 * @param {number} value
+	 * @returns {ParagraphSpeedReader}
+	 */
+	addCurrentParagraphIndex(value) {
+		this.currentParagraphIndex = this.currentParagraphIndex + value;
+		return this.currentParagraph;
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	hasNextParagraph() {
+		return this._paragraphs.hasNext();
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	hasPreviousParagraph() {
+		return this._paragraphs.hasPrevious();
+	}
+
+	/**
+	 * @returns {ParagraphSpeedReader}
+	 */
+	nextParagraph() {
+		return this.addCurrentParagraphIndex(1);
+	}
+
+	/**
+	 * @returns {ParagraphSpeedReader}
+	 */
+	previousParagraph() {
+		return this.addCurrentParagraphIndex(-1);
+	}
+
 }
 
 /**
  * @returns {SpeedReader}
  */
-export function buildSpeedReader(text, settings=defaultSettings) {
+export function buildSpeedReader(
+	text, isPaused=true, settings=defaultSettings
+) {
 	const speedReader = tag({
 		tagName: "speed-reader",
+		attributes: {
+			[attrs.currentParagraphIndex]: -1,
+			[attrs.isPaused]: isPaused,
+		},
+		textContent: text,
 	});
 	speedReader.settings = settings;
-	speedReader.text = text;
+	return speedReader;
 }
 
 customElements.define("speed-reader", SpeedReader);
