@@ -36,7 +36,7 @@ export default class BoundedList {
 	 * @param {number} i
 	 */
 	set index(i) {
-		this._index = threshold(0, i, this._list.length - 1);
+		this._index = threshold(-1, i, this._list.length - 1);
 	}
 
 	/**
@@ -44,6 +44,13 @@ export default class BoundedList {
 	 */
 	get current() {
 		return this._list[this._index];
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	isStarted() {
+		return this.index > -1;
 	}
 
 	/**
@@ -86,5 +93,9 @@ export default class BoundedList {
 	previous() {
 		this.index = this.index - 1;
 		return this.current;
+	}
+
+	resetIndex() {
+		this.index = -1;
 	}
 }
