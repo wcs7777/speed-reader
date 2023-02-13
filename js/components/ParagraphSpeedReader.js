@@ -80,9 +80,8 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 	 * @param {string|number} highlighted
 	 */
 	set isCurrentChunkTextHighlighted(highlighted) {
-		const ct = this.currentChunkText;
-		if (ct && !boolEqualsLoose(ct.isHighlighted, highlighted)) {
-			ct.isHighlighted = highlighted;
+		if (!this._chunkTexts.isBeforeFirst()) {
+			this.currentChunkText.isHighlighted = highlighted;
 		}
 	}
 
