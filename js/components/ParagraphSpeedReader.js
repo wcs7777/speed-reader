@@ -174,6 +174,10 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 		return this.currentChunkText?.text.length;
 	}
 
+	isChunkTextsBeforeFirst() {
+		return this._chunkTexts.isBeforeFirst();
+	}
+
 }
 
 /**
