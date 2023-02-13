@@ -162,16 +162,29 @@ export class SpeedReader extends HTMLElement {
 	}
 
 	set text(newText) {
+		let offset = 0;
+		this.paragraphsRanges = [];
 		this.textContent = "";
 		this._text = newText;
 		this.paragraphs = splitParagraphs(this.text)
-			.map((paragraph) => {
-				return buildParagraphSpeedReader(
-					separateChunks(splitWords(paragraph), this.chunkLength)
+			.map((paragraphText) => {
+				const chunksRanges = [];
+				const paragraph = buildParagraphSpeedReader(
+					separateChunks(splitWords(paragraphText), this.chunkLength)
 						.map((chunk) => {
+							++offset;
+							const begin = offset;
+							offset += chunk.length - 1;
+							chunksRanges.push({ begin, end: offset });
 							return buildChunkText(chunk.join(" "), false);
 						}),
 				);
+				this.paragraphsRanges.push({
+					begin: chunksRanges[0]?.begin,
+					end: chunksRanges[chunksRanges.length - 1]?.end,
+					chunksRanges,
+				});
+				return paragraph;
 			});
 	}
 
