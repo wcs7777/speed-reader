@@ -34,7 +34,6 @@ export function form2object(form) {
 	const obj = {};
 	const radios = new Set();
 	for (const control of form.elements) {
-		console.log(`type: ${control.type}`);
 		const key = kebab2camel(control.id ?? control.name ?? "");
 		switch (control.type) {
 			case "radio":
@@ -105,7 +104,7 @@ export function tag({
 		element.appendChild(document.createTextNode(textContent));
 	}
 	if (children) {
-		element.append(...children);
+		element.append(...toArray(children));
 	}
 	return element;
 }
