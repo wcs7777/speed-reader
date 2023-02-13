@@ -21,7 +21,7 @@ export function kebab2camel(kebab) {
  * @param {number} chunkLength
  * @returns {string[][]}
  */
-function separateChunks(words, chunkLength) {
+export function separateChunks(words, chunkLength) {
 	const chunks = [];
 	const totalWords = words.length;
 	let i = 0;
