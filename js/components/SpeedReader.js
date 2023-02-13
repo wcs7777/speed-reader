@@ -21,8 +21,9 @@ const attrs = {
 	currentParagraphIndex: "data-current-paragraph-index",
 };
 const cssVariables = {
+	highlightBackgroundColor: ChunkText.cssVariables.highlightBackgroundColor,
 	highlightColor: ChunkText.cssVariables.highlightColor,
-	backgroundColor: "--speed-reader-background-color",
+	textBackgroundColor: "--speed-reader-text-background-color",
 	textColor: "--speed-reader-text-color",
 	fontSize: "--speed-reader-font-size",
 	lineHeight: "--speed-reader-line-height",
@@ -32,8 +33,9 @@ const cssVariables = {
 const template = createTemplate(`
 <style>
 	:host {
+		${cssVariables.highlightBackgroundColor}: ${defaultSettings.highlightBackgroundColor};
 		${cssVariables.highlightColor}: ${defaultSettings.highlightColor};
-		${cssVariables.backgroundColor}: ${defaultSettings.backgroundColor};
+		${cssVariables.textBackgroundColor}: ${defaultSettings.textBackgroundColor};
 		${cssVariables.textColor}: ${defaultSettings.textColor};
 		${cssVariables.fontSize}: ${defaultSettings.fontSize};
 		${cssVariables.lineHeight}: ${defaultSettings.lineHeight};

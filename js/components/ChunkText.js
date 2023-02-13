@@ -6,11 +6,16 @@ const attrs = {
 	isHighlighted: "data-is-highlighted",
 };
 const cssVariables = {
+	highlightBackgroundColor: "--chunk-text-highlight-background-color",
 	highlightColor: "--chunk-text-highlight-color",
 };
 const template = createTemplate(`
 <style>
 	:host(.is-highlighted) {
+		background-color: var(
+			${cssVariables.highlightBackgroundColor},
+			${defaultSettings.highlightBackgroundColor}
+		);
 		color: var(
 			${cssVariables.highlightColor},
 			${defaultSettings.highlightColor}
