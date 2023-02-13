@@ -105,9 +105,7 @@ export function tag({
 		element.appendChild(document.createTextNode(textContent));
 	}
 	if (children) {
-		for (const child of children) {
-			element.appendChild(child);
-		}
+		element.append(...children);
 	}
 	return element;
 }
