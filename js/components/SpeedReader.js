@@ -189,7 +189,7 @@ export class SpeedReader extends HTMLElement {
 	}
 
 	get paragraphs() {
-		return this._paragraphs;
+		return this._paragraphs.list;
 	}
 
 	set paragraphs(newParagraphs) {
