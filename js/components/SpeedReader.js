@@ -101,9 +101,15 @@ export class SpeedReader extends HTMLElement {
 		while (this.hasNextParagraph()) {
 			const paragraph = this.nextParagraph();
 			while (paragraph.hasNextChunkText()) {
+				const chunk = paragraph.nextChunkText();
+				chunk.scrollIntoView({
+					behavior: "smooth",
+					block: "nearest",
+					inline: "nearest",
+				});
 				await sleep(
 					chunkMilliseconds(
-						paragraph.nextChunkText().text.length,
+						chunk.text.length,
 						this.charactersPerSecond,
 					)
 				);
