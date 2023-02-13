@@ -1,7 +1,15 @@
-import { createTemplate, tag, templateContent } from "../utils/dom.js";
+import {
+	separateChunks,
+	splitParagraphs,
+	splitWords
+} from "../utils/alphanumeric.js";
+import BoundedList from "../utils/BoundedList.js";
 import defaultSettings from "../utils/defaultSettings.js";
-import { ChunkText } from "./ChunkText.js";
+import { byId, createTemplate, tag, templateContent } from "../utils/dom.js";
+import { buildChunkText } from "./ChunkText.js";
+import { buildParagraphSpeedReader } from "./ParagraphSpeedReader.js";
 
+const averageWordSize = 5.7;
 const attrs = {
 	isOpened: "data-is-opened",
 	isPaused: "data-is-paused",
@@ -42,6 +50,10 @@ export class SpeedReader extends HTMLElement {
 	constructor() {
 		super();
 		this.attachShadow({ mode: "open" });
+		this.paragraphsId = "paragraphs";
+		this.charactersPerSeconds = 1;
+		this.chunkLength = averageWordSize;
+		this._paragraphs = new BoundedList();
 		this._settings = defaultSettings;
 		this._text = this.textContent.trim?.() || "";
 	}
@@ -65,8 +77,28 @@ export class SpeedReader extends HTMLElement {
 	set settings(newSettings) {
 		this._settings = newSettings;
 		for (const [ key, property ] of Object.entries(cssVariables)) {
-			this.style.setProperty(property, newSettings[key]);
+			this.style.setProperty(property, this.settings[key]);
 		}
+		this.charactersPerSecond = (
+			this.settings.wordsPerMinute / 60 * averageWordSize
+		);
+		this.chunkLength = this.settings.wordsPerChunk * averageWordSize;
+	}
+
+	get paragraphs() {
+		return this._paragraphs;
+	}
+
+	set paragraphs(newParagraphs) {
+		this._paragraphs.list = newParagraphs;
+		byId(this.paragraphsId)?.remove();
+		this.appendChild(
+			tag({
+				tagName: "div",
+				id: this.paragraphsId,
+				children: newParagraphs,
+			}),
+		);
 	}
 
 	get text() {
@@ -75,6 +107,15 @@ export class SpeedReader extends HTMLElement {
 
 	set text(newText) {
 		this._text = newText;
+		this.paragraphs = splitParagraphs(this.text)
+			.map((paragraph) => {
+				return buildParagraphSpeedReader(
+					separateChunks(splitWords(paragraph), this.chunkLength)
+						.map((chunk) => {
+							return buildChunkText(chunk.join(" "), false);
+						}),
+				);
+			});
 	}
 
 }
