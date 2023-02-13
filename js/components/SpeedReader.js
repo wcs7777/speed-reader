@@ -44,6 +44,7 @@ const template = createTemplate(`
 		${ParagraphSpeedReader.cssVariables.margin}: ${paragraphMargin}px 0;
 
 		display: block;
+		margin: 0;
 		background-color: var(${cssVariables.backgroundColor});
 		padding: ${paragraphMargin}px ${paragraphMargin * 2.5}px;
 		min-width: 50px;
