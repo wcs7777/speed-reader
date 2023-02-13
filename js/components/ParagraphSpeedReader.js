@@ -11,7 +11,11 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 
 	constructor() {
 		super();
-		this._chunkTexts = new BoundedList($$("[is=chunk-text]", this));
+		this._chunkTexts = new BoundedList();
+	}
+
+	connectedCallback() {
+		this.chunkTexts = $$("[is=chunk-text]", this);
 	}
 
 	static get attrs() {
@@ -36,16 +40,14 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 	}
 
 	/**
-	 * @param {ChunkText[]} list
+	 * @param {ChunkText[]} newChunkTexts
 	 */
-	set chunkTexts(list) {
-		for (const chunkText of this.chunkTexts) {
-			chunkText.remove();
+	set chunkTexts(newChunkTexts) {
+		while (this.lastChild) {
+			this.lastChild.remove();
 		}
-		this._chunkTexts.clear();
-		for (const item of list) {
-			this.addChunkText(item);
-		}
+		this._chunkTexts.list = newChunkTexts;
+		this.appendChild(tag({ tagName: "span", children: newChunkTexts }));
 	}
 
 	/**
