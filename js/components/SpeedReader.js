@@ -181,7 +181,7 @@ export class SpeedReader extends HTMLElement {
 				);
 				this.paragraphsRanges.push({
 					begin: chunksRanges[0]?.begin,
-					end: chunksRanges[chunksRanges.length - 1]?.end,
+					end: chunksRanges.at(-1)?.end,
 					chunksRanges,
 				});
 				return paragraph;
