@@ -131,6 +131,10 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 		return this.currentChunkText;
 	}
 
+	rewindChunkTexts() {
+		this._chunkTexts.rewind();
+	}
+
 	/**
 	 * @returns {boolean}
 	 */
