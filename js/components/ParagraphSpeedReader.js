@@ -1,16 +1,30 @@
 import BoundedList from "../utils/BoundedList.js";
-import { $$, tag } from "../utils/dom.js";
+import { $$, createTemplate, tag, templateContent } from "../utils/dom.js";
 import { boolEqualsLoose } from "../utils/mixed.js";
 import { ChunkText } from "./ChunkText.js";
 
 const attrs = {
 	currentChunkTextIndex: "data-current-chunk-text-index",
 };
+const cssVariables = {
+	margin: "--paragraph-speed-reader-margin",
+};
+const template = createTemplate(`
+<style>
+	:host {
+		margin: var(${cssVariables.margin}, 10px 0);
+	}
+</style>
+<slot></slot>
+`);
 
 export class ParagraphSpeedReader extends HTMLParagraphElement {
 
 	constructor() {
 		super();
+		this.attachShadow({ mode: "open" }).appendChild(
+			templateContent(template),
+		);
 		this._chunkTexts = new BoundedList();
 	}
 
@@ -20,6 +34,10 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 
 	static get attrs() {
 		return attrs;
+	}
+
+	static get cssVariables() {
+		return cssVariables;
 	}
 
 	static get observedAttributes() {
