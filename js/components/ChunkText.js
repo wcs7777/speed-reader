@@ -24,13 +24,14 @@ export class ChunkText extends HTMLSpanElement {
 
 	constructor() {
 		super();
-		this.attachShadow({ mode: "open" });
-		this.text = this.text ?? "";
+		this.attachShadow({ mode: "open" }).appendChild(
+			templateContent(template),
+		);
 		this.isHighlighted = this.isHighlighted ?? false;
 	}
 
 	connectedCallback() {
-		this.shadowRoot.appendChild(templateContent(template));
+		this.text = this.text ?? "";
 		this.updateColor();
 	}
 
@@ -70,9 +71,7 @@ export class ChunkText extends HTMLSpanElement {
 	 * @returns {boolean}
 	 */
 	get isHighlighted() {
-		return boolEqualsLoose(
-			true, this.getAttribute(attrs.isHighlighted)
-		);
+		return boolEqualsLoose(true, this.getAttribute(attrs.isHighlighted));
 	}
 
 	/**
