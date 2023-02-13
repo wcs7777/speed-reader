@@ -57,12 +57,13 @@ const template = createTemplate(`
 export class CustomModal extends HTMLElement {
 	constructor() {
 		super();
-		this.attachShadow({ mode: "open" });
+		this.attachShadow({ mode: "open" }).appendChild(
+			templateContent(template),
+		);
 	}
 
 	connectedCallback() {
 		const name = this.name ?? defaultName;
-		this.shadowRoot.appendChild(templateContent(template));
 		for (const opener of this.openers(this.shadowRoot, defaultName)) {
 			opener.setAttribute(attrs.opener, name);
 		}
