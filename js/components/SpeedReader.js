@@ -102,17 +102,13 @@ export class SpeedReader extends HTMLElement {
 
 	async startReading() {
 		while (this.hasNextParagraph()) {
-			const paragraph = this.nextParagraph();
-			while (paragraph.hasNextChunkText()) {
-				const chunk = paragraph.nextChunkText();
-				chunk.scrollIntoView({
-					behavior: "smooth",
-					block: "nearest",
-					inline: "nearest",
-				});
+			this.nextParagraph();
+			while (this.currentParagraph.hasNextChunkText()) {
+				this.currentParagraph.nextChunkText();
+				this.currentParagraph.assureCurrentChunkTextInView();
 				await sleep(
 					chunkMilliseconds(
-						chunk.text.length,
+						this.currentParagraph.currentChunkTextLength(),
 						this.charactersPerSecond,
 					)
 				);
@@ -123,8 +119,10 @@ export class SpeedReader extends HTMLElement {
 			if (this.settings.slightPause) {
 				await sleep(300);
 			}
-			paragraph.isCurrentChunkTextHighlighted = false;
+			this.currentParagraph.isCurrentChunkTextHighlighted = false;
+			this.currentParagraph.rewindChunkTexts();
 		}
+		this.rewindParagraphs();
 	}
 
 	/**
