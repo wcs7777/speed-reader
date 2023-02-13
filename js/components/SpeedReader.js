@@ -221,6 +221,10 @@ export class SpeedReader extends HTMLElement {
 		return this.currentParagraph;
 	}
 
+	rewindParagraphs() {
+		this._paragraphs.rewind();
+	}
+
 	/**
 	 * @returns {boolean}
 	 */
