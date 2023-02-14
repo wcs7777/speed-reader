@@ -1,5 +1,5 @@
 import {
-	chunkMilliseconds,
+	chunkTextMs,
 	findIndexInRanges,
 	separateChunks,
 	splitParagraphs,
@@ -108,7 +108,7 @@ export class SpeedReader extends HTMLDivElement {
 				this.currentParagraph.nextChunkText();
 				this.currentParagraph.assureCurrentChunkTextInView();
 				await sleep(
-					chunkMilliseconds(
+					chunkTextMs(
 						this.currentParagraph.currentChunkTextLength(),
 						this.charactersPerSecond,
 					)

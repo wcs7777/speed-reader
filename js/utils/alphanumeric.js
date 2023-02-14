@@ -63,7 +63,7 @@ export function splitWords(paragraph) {
  * @param {number} charactersPerSecond
  * @returns {number}
  */
-export function chunkMilliseconds(chunkTextLength, charactersPerSecond) {
+export function chunkTextMs(chunkTextLength, charactersPerSecond) {
 	return chunkTextLength / charactersPerSecond * 1000;
 }
 
