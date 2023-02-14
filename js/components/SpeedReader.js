@@ -158,7 +158,17 @@ export class SpeedReader extends HTMLDivElement {
 		this.charactersPerSecond = (
 			this.settings.wordsPerMinute / 60 * averageWordSize
 		);
+		const oldChunkLength = this.chunkLength;
 		this.chunkLength = this.settings.wordsPerChunk * averageWordSize;
+		if (oldChunkLength !== this.chunkLength && this.text) {
+			const isPaused = this.isPaused;
+			this.isPaused = true;
+			const oldWordOffset = this.currentWordOffset;
+			// rebuild paragraphs and chunkTexts
+			this.text = this.text;
+			this.currentWordOffset = oldWordOffset;
+			this.isPaused = isPaused;
+		}
 	}
 
 	get text() {
