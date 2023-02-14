@@ -307,6 +307,9 @@ export class SpeedReader extends HTMLDivElement {
 	}
 
 	rewindParagraphs() {
+		for (const paragraph of this.paragraphs) {
+			paragraph.rewindChunkTexts();
+		}
 		this._paragraphs.rewind();
 	}
 
