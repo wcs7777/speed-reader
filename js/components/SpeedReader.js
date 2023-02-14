@@ -1,5 +1,6 @@
 import {
 	chunkMilliseconds,
+	findIndexInRanges,
 	separateChunks,
 	splitParagraphs,
 	splitWords
@@ -223,6 +224,44 @@ export class SpeedReader extends HTMLDivElement {
 			this.setAttribute(
 				attrs.currentParagraphIndex, this.currentParagraphIndex
 			);
+		}
+	}
+
+	/**
+	 * @returns {number}
+	 */
+	get currentWordOffset() {
+		const paragraphIndex = this.currentParagraphIndex;
+		if (paragraphIndex > -1) {
+			const chunkTextIndex = (
+				this.currentParagraph.currentChunkTextIndex > -1 ?
+				this.currentParagraph.currentChunkTextIndex : 0
+			);
+			return this.paragraphsRanges
+				.at?.(paragraphIndex)?.chunkTextsRanges
+				.at?.(chunkTextIndex)?.begin ?? 1;
+		} else {
+			return 1;
+		}
+	}
+
+	/**
+	 * @param {number} offset
+	 */
+	set currentWordOffset(offset) {
+		const paragraphIndex = findIndexInRanges(this.paragraphsRanges, offset);
+		if (paragraphIndex > -1) {
+			const chunkTextIndex = findIndexInRanges(
+				this.paragraphsRanges.at(paragraphIndex).chunkTextsRanges,
+				offset,
+			);
+			if (this.currentParagraph) {
+				this.currentParagraph.isCurrentChunkTextHighlighted = false;
+				this.currentParagraph.rewindChunkTexts();
+			}
+			this.currentParagraphIndex = paragraphIndex;
+			this.currentParagraph.currentChunkTextIndex = chunkTextIndex;
+			this.currentParagraph.isCurrentChunkTextHighlighted = true;
 		}
 	}
 
