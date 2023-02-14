@@ -59,7 +59,7 @@ const template = createTemplate(`
 <slot></slot>
 `);
 
-export class SpeedReader extends HTMLElement {
+export class SpeedReader extends HTMLDivElement {
 
 	constructor() {
 		super();
@@ -280,7 +280,8 @@ export function buildSpeedReader(
 	text, isPaused=true, settings=defaultSettings
 ) {
 	const speedReader = tag({
-		tagName: "speed-reader",
+		tagName: "div",
+		is: "speed-reader",
 		attributes: {
 			[attrs.currentParagraphIndex]: -1,
 			[attrs.isPaused]: isPaused,
@@ -291,4 +292,4 @@ export function buildSpeedReader(
 	return speedReader;
 }
 
-customElements.define("speed-reader", SpeedReader);
+customElements.define("speed-reader", SpeedReader, { extends: "div" });
