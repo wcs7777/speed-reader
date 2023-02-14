@@ -168,21 +168,21 @@ export class SpeedReader extends HTMLElement {
 		this._text = newText;
 		this.paragraphs = splitParagraphs(this.text)
 			.map((paragraphText) => {
-				const chunksRanges = [];
+				const chunkTextsRanges = [];
 				const paragraph = buildParagraphSpeedReader(
 					separateChunks(splitWords(paragraphText), this.chunkLength)
 						.map((chunk) => {
 							++offset;
 							const begin = offset;
 							offset += chunk.length - 1;
-							chunksRanges.push({ begin, end: offset });
+							chunkTextsRanges.push({ begin, end: offset });
 							return buildChunkText(chunk.join(" "), false);
 						}),
 				);
 				this.paragraphsRanges.push({
-					begin: chunksRanges[0]?.begin,
-					end: chunksRanges.at(-1)?.end,
-					chunksRanges,
+					begin: chunkTextsRanges[0]?.begin,
+					end: chunkTextsRanges.at(-1)?.end,
+					chunkTextsRanges,
 				});
 				return paragraph;
 			});
