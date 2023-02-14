@@ -161,8 +161,8 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 		return this.addCurrentChunkTextIndex(-1);
 	}
 
-	assureCurrentChunkTextInView() {
-		this.currentChunkText.scrollIntoView({
+	assureIntoViewport() {
+		this.scrollIntoView({
 			behavior: "smooth",
 			block: "nearest",
 			inline: "nearest",

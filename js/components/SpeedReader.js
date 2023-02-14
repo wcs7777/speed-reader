@@ -106,7 +106,7 @@ export class SpeedReader extends HTMLDivElement {
 			this.nextParagraph();
 			while (this.currentParagraph.hasNextChunkText()) {
 				this.currentParagraph.nextChunkText();
-				this.currentParagraph.assureCurrentChunkTextInView();
+				this.currentParagraph.assureIntoViewport();
 				await sleep(
 					chunkTextMs(
 						this.currentParagraph.currentChunkTextLength(),
