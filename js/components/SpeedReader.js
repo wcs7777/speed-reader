@@ -139,6 +139,9 @@ export class SpeedReader extends HTMLDivElement {
 		if (!boolEqualsLoose(this._isPaused, paused)) {
 			this._isPaused = paused;
 			this.setAttribute(attrs.isPaused, paused);
+			if (!this.isPaused && !this.isReading()) {
+				this.startReading().catch(console.error);
+			}
 		}
 	}
 
