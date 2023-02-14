@@ -206,7 +206,7 @@ export class SpeedReader extends HTMLDivElement {
 						}),
 				);
 				this.paragraphsRanges.push({
-					begin: chunkTextsRanges[0]?.begin,
+					begin: chunkTextsRanges.at(0)?.begin,
 					end: chunkTextsRanges.at(-1)?.end,
 					chunkTextsRanges,
 				});
