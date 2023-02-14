@@ -158,9 +158,9 @@ export class SpeedReader extends HTMLDivElement {
 		this.charactersPerSecond = (
 			this.settings.wordsPerMinute / 60 * averageWordSize
 		);
-		const oldChunkLength = this.chunkLength;
-		this.chunkLength = this.settings.wordsPerChunk * averageWordSize;
-		if (oldChunkLength !== this.chunkLength && this.text) {
+		const oldChunkTextLength = this.chunkTextLength;
+		this.chunkTextLength = this.settings.wordsPerChunk * averageWordSize;
+		if (oldChunkTextLength !== this.chunkTextLength && this.text) {
 			const isPaused = this.isPaused;
 			this.isPaused = true;
 			const oldWordOffset = this.currentWordOffset;
@@ -184,7 +184,7 @@ export class SpeedReader extends HTMLDivElement {
 			.map((paragraphText) => {
 				const chunkTextsRanges = [];
 				const paragraph = buildParagraphSpeedReader(
-					separateChunks(splitWords(paragraphText), this.chunkLength)
+					separateChunks(splitWords(paragraphText), this.chunkTextLength)
 						.map((chunk) => {
 							++offset;
 							const begin = offset;
