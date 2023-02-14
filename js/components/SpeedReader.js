@@ -270,8 +270,8 @@ export class SpeedReader extends HTMLDivElement {
 				this.currentParagraph.currentChunkTextIndex : 0
 			);
 			return this.paragraphsRanges
-				.at?.(paragraphIndex)?.chunkTextsRanges
-				.at?.(chunkTextIndex)?.begin ?? 1;
+				.at(paragraphIndex)?.chunkTextsRanges
+				.at(chunkTextIndex)?.begin ?? 1;
 		} else {
 			return 1;
 		}
