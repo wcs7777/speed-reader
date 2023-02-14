@@ -352,6 +352,16 @@ export class SpeedReader extends HTMLDivElement {
 		return this.addCurrentParagraphIndex(-1);
 	}
 
+	forward() {
+		if (this.currentParagraph.hasNextChunkText?.()) {
+			return this.currentParagraph.nextChunkText();
+		} else if (this.hasNextParagraph()){
+			this.currentParagraph.rewindChunkTexts?.();
+			return this.nextParagraph().nextChunkText();
+		} else {
+			return null;
+		}
+	}
 }
 
 /**
