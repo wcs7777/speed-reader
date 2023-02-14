@@ -130,6 +130,8 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 	}
 
 	rewindChunkTexts() {
+		$$(`[${ChunkText.attrs.isHighlighted}="true"]`, this)
+			.forEach((chunkText) => chunkText.isHighlighted = false);
 		this._chunkTexts.rewind();
 	}
 
