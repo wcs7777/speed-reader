@@ -1,6 +1,5 @@
 import BoundedList from "../utils/BoundedList.js";
 import { $$, createTemplate, tag, templateContent } from "../utils/dom.js";
-import { boolEqualsLoose } from "../utils/mixed.js";
 import { ChunkText } from "./ChunkText.js";
 
 const attrs = {
