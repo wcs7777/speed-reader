@@ -146,10 +146,16 @@ export class SpeedReader extends HTMLDivElement {
 		}
 	}
 
+	/**
+	 * @returns {defaultSettings}
+	 */
 	get settings() {
 		return this._settings;
 	}
 
+	/**
+	 * @param {defaultSettings} newSettings
+	 */
 	set settings(newSettings) {
 		this._settings = newSettings;
 		for (const [ key, property ] of Object.entries(cssVariables)) {
@@ -171,10 +177,16 @@ export class SpeedReader extends HTMLDivElement {
 		}
 	}
 
+	/**
+	 * @returns {string}
+	 */
 	get text() {
 		return this._text;
 	}
 
+	/**
+	 * @param {string} newText
+	 */
 	set text(newText) {
 		let offset = 0;
 		this.paragraphsRanges = [];
@@ -202,10 +214,17 @@ export class SpeedReader extends HTMLDivElement {
 			});
 	}
 
+	/**
+	 * @returns {ParagraphSpeedReader[]}
+	 */
 	get paragraphs() {
 		return this._paragraphs.list;
 	}
 
+
+	/**
+	 * @param {ParagraphSpeedReader[]} newParagraphs
+	 */
 	set paragraphs(newParagraphs) {
 		while (this.lastChild) {
 			this.lastChild.remove();
@@ -228,6 +247,9 @@ export class SpeedReader extends HTMLDivElement {
 		return this._paragraphs.index;
 	}
 
+	/**
+	 * @param {number} index
+	 */
 	set currentParagraphIndex(index) {
 		if (index != this.currentParagraphIndex) {
 			this._paragraphs.index = index;
