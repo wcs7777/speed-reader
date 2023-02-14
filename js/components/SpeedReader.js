@@ -102,28 +102,32 @@ export class SpeedReader extends HTMLDivElement {
 	}
 
 	async startReading() {
-		while (this.hasNextParagraph()) {
-			this.nextParagraph();
-			while (this.currentParagraph.hasNextChunkText()) {
-				this.currentParagraph.nextChunkText();
-				this.currentParagraph.assureIntoViewport();
-				await sleep(
-					chunkTextMs(
-						this.currentParagraph.currentChunkTextLength(),
-						this.charactersPerSecond,
-					)
-				);
-				while (this.isPaused) {
+		try {
+			while (this.hasNextParagraph()) {
+				this.nextParagraph();
+				while (this.currentParagraph.hasNextChunkText()) {
+					this.currentParagraph.nextChunkText();
+					this.currentParagraph.assureIntoViewport();
+					await sleep(
+						chunkTextMs(
+							this.currentParagraph.currentChunkTextLength(),
+							this.charactersPerSecond,
+						)
+					);
+					while (this.isPaused) {
+						await sleep(300);
+					}
+				}
+				if (this.settings.slightPause) {
 					await sleep(300);
 				}
+				this.currentParagraph.isCurrentChunkTextHighlighted = false;
+				this.currentParagraph.rewindChunkTexts();
 			}
-			if (this.settings.slightPause) {
-				await sleep(300);
-			}
-			this.currentParagraph.isCurrentChunkTextHighlighted = false;
-			this.currentParagraph.rewindChunkTexts();
+			this.rewindParagraphs();
+		} catch (error) {
+			console.error(error);
 		}
-		this.rewindParagraphs();
 	}
 
 	/**
