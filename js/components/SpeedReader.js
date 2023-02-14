@@ -45,7 +45,7 @@ const template = createTemplate(`
 
 		display: block;
 		margin: 0;
-		background-color: var(${cssVariables.backgroundColor});
+		background-color: var(${cssVariables.textBackgroundColor});
 		padding: ${paragraphMargin}px ${paragraphMargin * 2.5}px;
 		min-width: 50px;
 		min-height: 50px;
