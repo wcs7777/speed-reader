@@ -13,6 +13,7 @@ export default class Walker extends Array {
 	 * 	oldCurrent: { index: number; value: any; },
 	 * 	newCurrent: { index: number; value: any; },
 	 * ) => void} indexChangeCallback
+	 * @returns {Walker}
 	 */
 	static fromWithIndexChangeCallback(
 		indexChangeCallback, arrayLike, mapFn, thisArg
@@ -27,6 +28,7 @@ export default class Walker extends Array {
 	 * 	oldCurrent: { index: number; value: any; },
 	 * 	newCurrent: { index: number; value: any; },
 	 * ) => void} indexChangeCallback
+	 * @returns {Walker}
 	 */
 	static ofWithIndexChangeCallback(indexChangeCallback, ...items) {
 		const walker = Walker.of(items);
