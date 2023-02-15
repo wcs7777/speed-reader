@@ -222,7 +222,7 @@ export class SpeedReader extends HTMLDivElement {
 	 * @returns {ParagraphSpeedReader[]}
 	 */
 	get paragraphs() {
-		return this._paragraphs.list;
+		return this._paragraphs.items;
 	}
 
 
@@ -233,7 +233,7 @@ export class SpeedReader extends HTMLDivElement {
 		while (this.lastChild) {
 			this.lastChild.remove();
 		}
-		this._paragraphs.list = newParagraphs;
+		this._paragraphs.items = newParagraphs;
 		this.appendChild(tag({ tagName: "span", children: newParagraphs }));
 	}
 

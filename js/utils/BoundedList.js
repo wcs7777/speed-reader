@@ -3,26 +3,26 @@ import { threshold } from "./alphanumeric.js";
 export default class BoundedList {
 
 	/**
-	 * @param {any[]} list
+	 * @param {any[]} items
 	 */
-	constructor(list=[]) {
-		this._list = list;
+	constructor(items=[]) {
+		this._items = items;
 		this._index = -1;
 	}
 
 	/**
 	 * @returns {any[]}
 	 */
-	get list() {
-		return this._list;
+	get items() {
+		return this._items;
 	}
 
 	/**
-	 * @param {any[]} newList
+	 * @param {any[]} newItems
 	 */
-	set list(newList) {
+	set items(newItems) {
 		this._index = -1;
-		this._list = newList;
+		this._items = newItems;
 	}
 
 	/**
@@ -43,7 +43,9 @@ export default class BoundedList {
 	 * @returns {any}
 	 */
 	get current() {
-		return this._list[this._index];
+		return this._items[this._index];
+	}
+
 	/**
 	 * @returns {number}
 	 */
@@ -83,7 +85,7 @@ export default class BoundedList {
 	 * @param {any} item
 	 */
 	add(item) {
-		return this._list.push(item);
+		return this._items.push(item);
 	}
 
 	clear() {

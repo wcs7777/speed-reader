@@ -53,7 +53,7 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 	 * @returns {ChunkText[]}
 	 */
 	get chunkTexts() {
-		return this._chunkTexts.list;
+		return this._chunkTexts.items;
 	}
 
 	/**
@@ -63,7 +63,7 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 		while (this.lastChild) {
 			this.lastChild.remove();
 		}
-		this._chunkTexts.list = newChunkTexts;
+		this._chunkTexts.items = newChunkTexts;
 		this.appendChild(tag({ tagName: "span", children: newChunkTexts }));
 	}
 
