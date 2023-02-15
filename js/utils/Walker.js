@@ -57,6 +57,9 @@ export default class Walker extends Array {
 		return this[this.index];
 	}
 
+	/**
+	 * @param {number} index
+	 */
 	toIndex(index) {
 		this.index = index;
 		return this.current;
