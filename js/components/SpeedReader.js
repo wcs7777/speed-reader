@@ -73,7 +73,7 @@ export class SpeedReader extends HTMLDivElement {
 	}
 
 	connectedCallback() {
-		this.text = this.textContent.trim?.() ?? "";
+		this.text = this.textContent;
 		if (!this.isPaused) {
 			this.startReading().catch(console.error);
 		}
@@ -353,10 +353,10 @@ export class SpeedReader extends HTMLDivElement {
 	}
 
 	forward() {
-		if (this.currentParagraph.hasNextChunkText?.()) {
+		if (this.currentParagraph?.hasNextChunkText()) {
 			return this.currentParagraph.nextChunkText();
 		} else if (this.hasNextParagraph()){
-			this.currentParagraph.rewindChunkTexts?.();
+			this.currentParagraph?.rewindChunkTexts();
 			return this.nextParagraph().nextChunkText();
 		} else {
 			return null;
