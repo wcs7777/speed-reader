@@ -1,9 +1,9 @@
-import BoundedList from "../utils/BoundedList.js";
+import Walker from "../utils/Walker.js";
 import { $$, createTemplate, tag, templateContent } from "../utils/dom.js";
 import { ChunkText } from "./ChunkText.js";
 
 const attrs = {
-	currentChunkTextIndex: "data-current-chunk-text-index",
+	chunkTextIndex: "data-chunk-text-index",
 };
 const cssVariables = {
 	margin: "--paragraph-speed-reader-margin",
@@ -24,7 +24,9 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 		this.attachShadow({ mode: "open" }).appendChild(
 			templateContent(template),
 		);
-		this._chunkTexts = new BoundedList();
+		this._chunkTexts = Walker.fromWithIndexChangeCallback(
+			this.chunkTextIndexChangeCallback.bind(this), []
+		);
 	}
 
 	connectedCallback() {
@@ -44,123 +46,21 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		if (name === attrs.currentChunkTextIndex && oldValue != newValue) {
-			this.currentChunkTextIndex = newValue;
+		if (name === attrs.chunkTextIndex && oldValue != newValue) {
+			this.chunkTextIndex = newValue;
 		}
 	}
 
 	/**
-	 * @returns {ChunkText[]}
+	 * @param {{ index: number; value: ChunkText }} oldCurrent
+	 * @param {{ index: number; value: ChunkText }} newCurrent
 	 */
-	get chunkTexts() {
-		return this._chunkTexts.items;
-	}
-
-	/**
-	 * @param {ChunkText[]} newChunkTexts
-	 */
-	set chunkTexts(newChunkTexts) {
-		while (this.lastChild) {
-			this.lastChild.remove();
-		}
-		this._chunkTexts.items = newChunkTexts;
-		this.appendChild(tag({ tagName: "span", children: newChunkTexts }));
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
-	get isCurrentChunkTextHighlighted() {
-		const ct = this.currentChunkText;
-		return ct ? ct.isHighlighted : false;
-	}
-
-	/**
-	 * @param {string|number} highlighted
-	 */
-	set isCurrentChunkTextHighlighted(highlighted) {
-		if (!this._chunkTexts.isBeforeFirst()) {
-			this.currentChunkText.isHighlighted = highlighted;
-		}
-	}
-
-	/**
-	 * @returns {ChunkText}
-	 */
-	get currentChunkText() {
-		return this._chunkTexts.current;
-	}
-
-	/**
-	 * @returns {number}
-	 */
-	get currentChunkTextIndex() {
-		return this._chunkTexts.index;
-	}
-
-	/**
-	 * @param {number} index
-	 */
-	set currentChunkTextIndex(index) {
-		if (index != this.currentChunkTextIndex) {
-			this.isCurrentChunkTextHighlighted = false;
-			this._chunkTexts.index = index;
-			this.setAttribute(
-				attrs.currentChunkTextIndex, this.currentChunkTextIndex
-			);
-			this.isCurrentChunkTextHighlighted = true;
-		}
-	}
-
-	/**
-	 * @param {ChunkText} chunkText
-	 */
-	addChunkText(chunkText) {
-		this._chunkTexts.add(chunkText);
-		this.appendChild(chunkText);
-	}
-
-	/**
-	 * @param {number} value
-	 * @returns {ChunkText}
-	 */
-	addCurrentChunkTextIndex(value) {
-		this.currentChunkTextIndex = this.currentChunkTextIndex + value;
-		return this.currentChunkText;
-	}
-
-	rewindChunkTexts() {
-		$$(`[${ChunkText.attrs.isHighlighted}="true"]`, this)
-			.forEach((chunkText) => chunkText.isHighlighted = false);
-		this._chunkTexts.rewind();
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
-	hasNextChunkText() {
-		return this._chunkTexts.hasNext();
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
-	hasPreviousChunkText() {
-		return this._chunkTexts.hasPrevious();
-	}
-
-	/**
-	 * @returns {ChunkText}
-	 */
-	nextChunkText() {
-		return this.addCurrentChunkTextIndex(1);
-	}
-
-	/**
-	 * @returns {ChunkText}
-	 */
-	previousChunkText() {
-		return this.addCurrentChunkTextIndex(-1);
+	chunkTextIndexChangeCallback(oldCurrent, newCurrent) {
+		oldCurrent.value?.toggleIsHighlighted(false);
+		newCurrent.value?.toggleIsHighlighted(true);
+		this.setAttribute(
+			attrs.chunkTextIndex, newCurrent.index
+		);
 	}
 
 	assureIntoViewport() {
@@ -171,12 +71,118 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 		});
 	}
 
-	currentChunkTextLength() {
-		return this.currentChunkText?.text.length;
+	/**
+	 * @returns {ChunkText[]}
+	 */
+	get chunkTexts() {
+		return this._chunkTexts;
 	}
 
-	isChunkTextsBeforeFirst() {
+	/**
+	 * @param {ChunkText[]} newChunkTexts
+	 */
+	set chunkTexts(newChunkTexts) {
+		while (this.lastChild) {
+			this.lastChild.remove();
+		}
+		this._chunkTexts = Walker.fromWithIndexChangeCallback(
+			this.chunkTextIndexChangeCallback.bind(this),
+			newChunkTexts,
+		);
+		this.appendChild(tag({ tagName: "span", children: newChunkTexts }));
+	}
+
+	/**
+	 * @returns {number}
+	 */
+	get chunkTextIndex() {
+		return this._chunkTexts.index;
+	}
+
+	/**
+	 * @param {number} index
+	 */
+	set chunkTextIndex(index) {
+		this._chunkTexts.index = index;
+	}
+
+	/**
+	 * @returns {ChunkText}
+	 */
+	get chunkText() {
+		return this._chunkTexts.current;
+	}
+
+	/**
+	 * @param {number} index
+	 * @returns {ChunkText}
+	 */
+	toChunkTextIndex(index) {
+		return this._chunkTexts.toIndex(index);
+	}
+
+	/**
+	 * @return {ChunkText}
+	 */
+	toFirstChunkText() {
+		return this._chunkTexts.toFirst();
+	}
+
+	/**
+	 * @return {ChunkText}
+	 */
+	toLastChunkText() {
+		return this._chunkTexts.toLast();
+	}
+
+	/**
+	 * @return {ChunkText}
+	 */
+	nextChunkText() {
+		return this._chunkTexts.next();
+	}
+
+	/**
+	 * @return {ChunkText}
+	 */
+	previousChunkText() {
+		return this._chunkTexts.previous();
+	}
+
+	rewindChunkTexts() {
+		$$(`[${ChunkText.attrs.isHighlighted}="true"]`, this)
+			.forEach((chunkText) => chunkText.isHighlighted = false);
+		return this._chunkTexts.rewind();
+	}
+
+	/**
+	 * @returns {Generator<ChunkText, void, undefined>}
+	 */
+	*traverseChunkTextsForward() {
+		yield* this._chunkTexts.traverseForward();
+	}
+
+	/**
+	 * @returns {Generator<ChunkText, void, undefined>}
+	 */
+	*traverseChunkTextsBackward() {
+		yield* this._chunkTexts.traverseBackward();
+	}
+
+	isChunkTextBeforeFirst() {
 		return this._chunkTexts.isBeforeFirst();
+	}
+
+	isChunkTextAfterLast() {
+		return this._chunkTexts.isAfterLast();
+	}
+
+	hasPreviousChunkText() {
+		return this._chunkTexts.hasPrevious();
+	}
+
+	hasNextChunkText() {
+		return this._chunkTexts.hasNext();
 	}
 
 }
@@ -190,7 +196,7 @@ export function buildParagraphSpeedReader(chunkTexts) {
 		tagName: "p",
 		is: "paragraph-speed-reader",
 		attributes: {
-			[attrs.currentChunkTextIndex]: -1,
+			[attrs.chunkTextIndex]: -1,
 		},
 		children: chunkTexts,
 	});
