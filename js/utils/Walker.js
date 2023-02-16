@@ -93,6 +93,7 @@ export default class Walker extends Array {
 		) {
 			yield item;
 		}
+		this.rewind();
 	}
 
 	*traverseBackward() {
@@ -103,6 +104,7 @@ export default class Walker extends Array {
 		) {
 			yield item;
 		}
+		this.rewind();
 	}
 
 	isBeforeFirst() {
