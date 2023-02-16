@@ -37,7 +37,7 @@ export class ChunkText extends HTMLSpanElement {
 
 	connectedCallback() {
 		this.text = this.text ?? "";
-		this.updateColor();
+		this.toggleIsHighlighted(this.isHighlighted);
 	}
 
 	static get attrs() {
@@ -54,7 +54,7 @@ export class ChunkText extends HTMLSpanElement {
 
 	attributeChangedCallback(name, oldValue, newValue) {
 		if (name === attrs.isHighlighted && oldValue != newValue) {
-			this.updateColor();
+			this.isHighlighted = newValue;
 		}
 	}
 
@@ -83,13 +83,15 @@ export class ChunkText extends HTMLSpanElement {
 	 * @param {string|boolean} highlighted
 	 */
 	set isHighlighted(highlighted) {
+		this.toggleIsHighlighted(highlighted);
+	}
+
+	toggleIsHighlighted(force) {
+		const highlighted = force ?? !this.isHighlighted;
 		if (!boolEqualsLoose(highlighted, this.isHighlighted)) {
 			this.setAttribute(attrs.isHighlighted, highlighted);
 		}
-	}
-
-	updateColor() {
-		this.classList.toggle("is-highlighted", this.isHighlighted);
+		this.classList.toggle("is-highlighted", highlighted);
 	}
 
 }
