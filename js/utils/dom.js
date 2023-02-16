@@ -148,3 +148,12 @@ export function createTemplate(innerHtml) {
 export function templateContent(template) {
 	return document.importNode(template.content, true);
 }
+
+/**
+ * @param {Node} parent
+ */
+export function removeAllChildren(parent) {
+	while (parent.lastChild) {
+		parent.lastChild.remove();
+	}
+}

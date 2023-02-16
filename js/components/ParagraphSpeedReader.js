@@ -1,5 +1,5 @@
+import { $$, createTemplate, removeAllChildren, tag, templateContent } from "../utils/dom.js";
 import Walker from "../utils/Walker.js";
-import { $$, createTemplate, tag, templateContent } from "../utils/dom.js";
 import { ChunkText } from "./ChunkText.js";
 
 const attrs = {
@@ -82,9 +82,7 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 	 * @param {ChunkText[]} newChunkTexts
 	 */
 	set chunkTexts(newChunkTexts) {
-		while (this.lastChild) {
-			this.lastChild.remove();
-		}
+		removeAllChildren(this);
 		this._chunkTexts = Walker.fromWithIndexChangeCallback(
 			this.chunkTextIndexChangeCallback.bind(this),
 			newChunkTexts,
