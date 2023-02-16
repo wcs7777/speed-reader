@@ -54,7 +54,7 @@ const template = createTemplate(`
 <slot></slot>
 `);
 
-export class CustomModal extends HTMLElement {
+export class CustomModal extends HTMLDivElement {
 	constructor() {
 		super();
 		this.attachShadow({ mode: "open" }).appendChild(
@@ -149,7 +149,8 @@ export class CustomModal extends HTMLElement {
 
 export function buildCustomModal(name, modalBody) {
 	return tag({
-		tagName: "custom-modal",
+		tagName: "div",
+		is: "custom-modal",
 		attributes: {
 			[attrs.name]: name,
 		},
@@ -157,4 +158,4 @@ export function buildCustomModal(name, modalBody) {
 	});
 }
 
-customElements.define("custom-modal", CustomModal);
+customElements.define("custom-modal", CustomModal, { extends: "div" });
