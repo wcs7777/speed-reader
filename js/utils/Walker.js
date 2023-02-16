@@ -115,6 +115,10 @@ export default class Walker extends Array {
 		return !(this.index < this.length);
 	}
 
+	isInRange() {
+		return !this.isBeforeFirst() && !this.isAfterLast();
+	}
+
 	hasPrevious() {
 		return this.index > 0;
 	}
