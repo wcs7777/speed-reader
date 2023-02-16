@@ -91,7 +91,6 @@ export default class Walker extends Array {
 			!this.isAfterLast();
 			item = this.next()
 		) {
-			console.log({ yielding: item });
 			yield item;
 		}
 	}
@@ -102,7 +101,6 @@ export default class Walker extends Array {
 			!this.isBeforeFirst();
 			item = this.previous()
 		) {
-			console.log({ yielding: item });
 			yield item;
 		}
 	}
