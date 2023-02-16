@@ -112,6 +112,13 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 	}
 
 	/**
+	 * @returns {number}
+	 */
+	get chunkTextLength() {
+		return this.chunkText.text.length;
+	}
+
+	/**
 	 * @param {number} index
 	 * @returns {ChunkText}
 	 */
