@@ -5,10 +5,15 @@ import {
 	splitParagraphs,
 	splitWords
 } from "../utils/alphanumeric.js";
-import BoundedList from "../utils/BoundedList.js";
 import defaultSettings from "../utils/defaultSettings.js";
-import { createTemplate, tag, templateContent } from "../utils/dom.js";
+import {
+	createTemplate,
+	removeAllChildren,
+	tag,
+	templateContent
+} from "../utils/dom.js";
 import { boolEqualsLoose, sleep } from "../utils/mixed.js";
+import Walker from "../utils/Walker.js";
 import { buildChunkText, ChunkText } from "./ChunkText.js";
 import {
 	buildParagraphSpeedReader,
@@ -19,7 +24,7 @@ const averageWordSize = 5.7;
 const paragraphMargin = 10;
 const attrs = {
 	isPaused: "data-is-paused",
-	currentParagraphIndex: "data-current-paragraph-index",
+	paragraphIndex: "data-paragraph-index",
 };
 const cssVariables = {
 	highlightBackgroundColor: ChunkText.cssVariables.highlightBackgroundColor,
@@ -67,7 +72,9 @@ export class SpeedReader extends HTMLDivElement {
 		this.attachShadow({ mode: "open" }).appendChild(
 			templateContent(template),
 		);
-		this._paragraphs = new BoundedList();
+		this._paragraphs = Walker.fromWithIndexChangeCallback(
+			this.attributeChangedCallback.bind(this), []
+		);
 		this.isPaused = this.isPaused ?? false;
 		this.settings = defaultSettings;
 	}
@@ -93,7 +100,7 @@ export class SpeedReader extends HTMLDivElement {
 
 	attributeChangedCallback(name, oldValue, newValue) {
 		if (oldValue != newValue) {
-			if (name === attrs.currentParagraphIndex) {
+			if (name === attrs.paragraphIndex) {
 				this.currentParagraphIndex = newValue;
 			} else if (name == attrs.isPaused) {
 				this.isPaused = newValue;
@@ -101,28 +108,25 @@ export class SpeedReader extends HTMLDivElement {
 		}
 	}
 
+	/**
+	 * @param {{ index: number; value: ParagraphSpeedReader }} oldCurrent
+	 * @param {{ index: number; value: ParagraphSpeedReader }} newCurrent
+	 */
+	paragraphIndexChangeCallback(oldCurrent, newCurrent) {
+		oldCurrent.value?.rewindChunkTexts();
+		newCurrent.value?.assureIntoViewport();
+		this.setAttribute(attrs.paragraphIndex, newCurrent.index);
+	}
+
 	async startReading() {
 		try {
-			while (this.hasNextParagraph()) {
-				this.nextParagraph();
-				while (this.currentParagraph.hasNextChunkText()) {
-					this.currentParagraph.nextChunkText();
-					this.currentParagraph.assureIntoViewport();
-					await sleep(
-						chunkTextMs(
-							this.currentParagraph.currentChunkTextLength(),
-							this.charactersPerSecond,
-						)
-					);
-					while (this.isPaused) {
-						await sleep(300);
-					}
+			let milliseconds;
+			while ((milliseconds = this.nextMilliseconds()) > 0) {
+				console.log({ milliseconds });
+				await sleep(milliseconds);
+				while (this.isPaused) {
+					await sleep(100);
 				}
-				if (this.settings.slightPause) {
-					await sleep(300);
-				}
-				this.currentParagraph.isCurrentChunkTextHighlighted = false;
-				this.currentParagraph.rewindChunkTexts();
 			}
 			this.rewindParagraphs();
 		} catch (error) {
@@ -131,23 +135,23 @@ export class SpeedReader extends HTMLDivElement {
 	}
 
 	/**
-	 * @returns {boolean}
+	 * @returns {number}
 	 */
-	get isPaused() {
-		return boolEqualsLoose(true, this.getAttribute(attrs.isPaused));
-	}
-
-	/**
-	 * @param {boolean} paused
-	 */
-	set isPaused(paused) {
-		if (!boolEqualsLoose(this._isPaused, paused)) {
-			this._isPaused = paused;
-			this.setAttribute(attrs.isPaused, paused);
-			if (!this.isPaused && !this.isReading()) {
-				this.startReading().catch(console.error);
+	nextMilliseconds() {
+		let milliseconds = 0;
+		if (!this.currentParagraph?.hasNextChunkText()) {
+			this.nextParagraph();
+			if (this.settings.slightPause) {
+				milliseconds += 100;
 			}
 		}
+		const length = this.currentParagraph?.nextChunkText()?.text.length;
+		if (length !== undefined) {
+			milliseconds += chunkTextMs(length, this.charactersPerSecond);
+		} else {
+			milliseconds = 0;
+		}
+		return milliseconds;
 	}
 
 	/**
@@ -162,7 +166,7 @@ export class SpeedReader extends HTMLDivElement {
 	 */
 	set settings(newSettings) {
 		this._settings = newSettings;
-		for (const [ key, property ] of Object.entries(cssVariables)) {
+		for (const [key, property] of Object.entries(cssVariables)) {
 			this.style.setProperty(property, this.settings[key]);
 		}
 		this.charactersPerSecond = (
@@ -173,10 +177,10 @@ export class SpeedReader extends HTMLDivElement {
 		if (oldChunkTextLength !== this.chunkTextLength && this.text) {
 			const isPaused = this.isPaused;
 			this.isPaused = true;
-			const oldWordOffset = this.currentWordOffset;
+			const oldWordOffset = this.wordOffset;
 			// rebuild paragraphs and chunkTexts
 			this.text = this.text;
-			this.currentWordOffset = oldWordOffset;
+			this.wordOffset = oldWordOffset;
 			this.isPaused = isPaused;
 		}
 	}
@@ -219,22 +223,81 @@ export class SpeedReader extends HTMLDivElement {
 	}
 
 	/**
+	 * @returns {boolean}
+	 */
+	get isPaused() {
+		return boolEqualsLoose(true, this.getAttribute(attrs.isPaused));
+	}
+
+	/**
+	 * @param {boolean} paused
+	 */
+	set isPaused(paused) {
+		if (!boolEqualsLoose(this._isPaused, paused)) {
+			this._isPaused = paused;
+			this.setAttribute(attrs.isPaused, paused);
+			if (!this.isPaused && !this.isParagraphInRange()) {
+				this.startReading().catch(console.error);
+			}
+		}
+	}
+
+	/**
+	 * @returns {number}
+	 */
+	get wordOffset() {
+		const defaultOffset = 1;
+		if (!this.isParagraphInRange()) {
+			return defaultOffset;
+		}
+		const chunkText = (
+			this.currentParagraph.isChunkTextInRange() ?
+			this.currentParagraph.chunkTextIndex : 0
+		);
+		return this.paragraphsRanges
+			.at(paragraph)
+			.chunkTextsRanges.at(chunkText).begin ?? defaultOffset;
+	}
+
+	/**
+	 * @param {number} offset
+	 */
+	set wordOffset(offset) {
+		const paragraph = findIndexInRanges(this.paragraphsRanges, offset);
+		if (paragraph > -1) {
+			const chunkText = findIndexInRanges(
+				this.paragraphsRanges.at(paragraph).chunkTextsRanges, offset
+			);
+			this.paragraphIndex = paragraph;
+			this.currentParagraph.chunkTextIndex = chunkText;
+		}
+	}
+
+	/**
 	 * @returns {ParagraphSpeedReader[]}
 	 */
 	get paragraphs() {
-		return this._paragraphs.items;
+		return this._paragraphs;
 	}
-
 
 	/**
 	 * @param {ParagraphSpeedReader[]} newParagraphs
 	 */
 	set paragraphs(newParagraphs) {
-		while (this.lastChild) {
-			this.lastChild.remove();
-		}
-		this._paragraphs.items = newParagraphs;
+		removeAllChildren(this);
+		this._paragraphs = Walker.fromWithIndexChangeCallback(
+			this.paragraphIndexChangeCallback.bind(this),
+			newParagraphs,
+		);
 		this.appendChild(tag({ tagName: "span", children: newParagraphs }));
+	}
+
+	get paragraphIndex() {
+		return this._paragraphs.index;
+	}
+
+	set paragraphIndex(index) {
+		this._paragraphs.index = index;
 	}
 
 	/**
@@ -245,69 +308,39 @@ export class SpeedReader extends HTMLDivElement {
 	}
 
 	/**
-	 * @returns {number}
-	 */
-	get currentParagraphIndex() {
-		return this._paragraphs.index;
-	}
-
-	/**
 	 * @param {number} index
-	 */
-	set currentParagraphIndex(index) {
-		if (index != this.currentParagraphIndex) {
-			this._paragraphs.index = index;
-			this.setAttribute(
-				attrs.currentParagraphIndex, this.currentParagraphIndex
-			);
-		}
-	}
-
-	/**
-	 * @returns {number}
-	 */
-	get currentWordOffset() {
-		const paragraphIndex = this.currentParagraphIndex;
-		if (paragraphIndex > -1) {
-			const chunkTextIndex = (
-				this.currentParagraph.currentChunkTextIndex > -1 ?
-				this.currentParagraph.currentChunkTextIndex : 0
-			);
-			return this.paragraphsRanges
-				.at(paragraphIndex)?.chunkTextsRanges
-				.at(chunkTextIndex)?.begin ?? 1;
-		} else {
-			return 1;
-		}
-	}
-
-	/**
-	 * @param {number} offset
-	 */
-	set currentWordOffset(offset) {
-		const paragraphIndex = findIndexInRanges(this.paragraphsRanges, offset);
-		if (paragraphIndex > -1) {
-			const chunkTextIndex = findIndexInRanges(
-				this.paragraphsRanges.at(paragraphIndex).chunkTextsRanges,
-				offset,
-			);
-			if (this.currentParagraph) {
-				this.currentParagraph.isCurrentChunkTextHighlighted = false;
-				this.currentParagraph.rewindChunkTexts();
-			}
-			this.currentParagraphIndex = paragraphIndex;
-			this.currentParagraph.currentChunkTextIndex = chunkTextIndex;
-			this.currentParagraph.isCurrentChunkTextHighlighted = true;
-		}
-	}
-
-	/**
-	 * @param {number} value
 	 * @returns {ParagraphSpeedReader}
 	 */
-	addCurrentParagraphIndex(value) {
-		this.currentParagraphIndex = this.currentParagraphIndex + value;
-		return this.currentParagraph;
+	toParagraphIndex(index) {
+		this._paragraphs.toIndex(index);
+	}
+
+	/**
+	 * @returns {ParagraphSpeedReader}
+	 */
+	toFirstParagraph() {
+		return this._paragraphs.toFirst();
+	}
+
+	/**
+	 * @returns {ParagraphSpeedReader}
+	 */
+	toLastParagraph() {
+		return this._paragraphs.toLast();
+	}
+
+	/**
+	 * @returns {ParagraphSpeedReader}
+	 */
+	nextParagraph() {
+		return this._paragraphs.next();
+	}
+
+	/**
+	 * @returns {ParagraphSpeedReader}
+	 */
+	previousParagraph() {
+		return this._paragraphs.previous();
 	}
 
 	rewindParagraphs() {
@@ -318,50 +351,67 @@ export class SpeedReader extends HTMLDivElement {
 	}
 
 	/**
-	 * @returns {boolean}
+	 * @returns {ChunkText}
 	 */
-	isReading() {
-		return !this._paragraphs.isBeforeFirst();
+	toNextChunkText() {
+		if (
+			!this.currentParagraph?.hasNextChunkText() &&
+			this.hasNextParagraph() &&
+			true
+		) {
+			this.nextParagraph();
+		}
+		return (
+			this.currentParagraph.nextChunkText() ??
+			this.currentParagraph.toLastChunkText()
+		);
 	}
 
 	/**
-	 * @returns {boolean}
+	 * @returns {ChunkText}
 	 */
-	hasNextParagraph() {
-		return this._paragraphs.hasNext();
+	toPreviousChunkText() {
+		if (!this.currentParagraph?.hasPreviousChunkText()) {
+			return this.previousParagraph().toLastChunkText();
+		} else {
+			return this.currentParagraph?.previousChunkText();
+		}
 	}
 
 	/**
-	 * @returns {boolean}
+	 * @returns {Generator<ParagraphSpeedReader, void, undefined>}
 	 */
+	*traverseParagraphsForward() {
+		yield* this._paragraphs.traverseForward();
+	}
+
+	/**
+	 * @returns {Generator<ParagraphSpeedReader, void, undefined>}
+	 */
+	*traverseParagraphsBackward() {
+		yield* this._paragraphs.traverseForward();
+	}
+
+	isParagraphBeforeFirst() {
+		return this._paragraphs.isBeforeFirst();
+	}
+
+	isParagraphAfterLast() {
+		return this._paragraphs.isAfterLast();
+	}
+
+	isParagraphInRange() {
+		return this._paragraphs.isInRange();
+	}
+
 	hasPreviousParagraph() {
 		return this._paragraphs.hasPrevious();
 	}
 
-	/**
-	 * @returns {ParagraphSpeedReader}
-	 */
-	nextParagraph() {
-		return this.addCurrentParagraphIndex(1);
+	hasNextParagraph() {
+		return this._paragraphs.hasNext();
 	}
 
-	/**
-	 * @returns {ParagraphSpeedReader}
-	 */
-	previousParagraph() {
-		return this.addCurrentParagraphIndex(-1);
-	}
-
-	forward() {
-		if (this.currentParagraph?.hasNextChunkText()) {
-			return this.currentParagraph.nextChunkText();
-		} else if (this.hasNextParagraph()){
-			this.currentParagraph?.rewindChunkTexts();
-			return this.nextParagraph().nextChunkText();
-		} else {
-			return null;
-		}
-	}
 }
 
 /**
@@ -374,7 +424,7 @@ export function buildSpeedReader(
 		tagName: "div",
 		is: "speed-reader",
 		attributes: {
-			[attrs.currentParagraphIndex]: -1,
+			[attrs.paragraphIndex]: -1,
 			[attrs.isPaused]: isPaused,
 		},
 		textContent: text,
