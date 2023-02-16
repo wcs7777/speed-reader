@@ -175,6 +175,10 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 		return this._chunkTexts.isAfterLast();
 	}
 
+	isChunkTextInRange() {
+		return this._chunkTexts.isInRange();
+	}
+
 	hasPreviousChunkText() {
 		return this._chunkTexts.hasPrevious();
 	}
