@@ -1,8 +1,3 @@
-html {
-	--minor-border-radius: 0.375em;
-	font: 16px/1.5 Arial, sans-serif;
-}
-
 .form {
 	display: flex;
 	flex-direction: column;
