@@ -15,7 +15,65 @@
 			<button id="read" class="button button-main">Read</button>
 			<button id="settings" class="button" data-custom-modal-opener="form">Settings</button>
 		</div>
+		<div is="custom-modal" data-custom-modal="form">
+			<form class="form" action="#">
+				<div class="field">
+					<label for="words-per-minute">Words Per Minute</label>
+					<input id="words-per-minute" type="number" min="60" max="6000" step="10">
+				</div>
+				<div class="field">
+					<label for="words-per-chunk">Words Per Chunk</label>
+					<input id="words-per-chunk" type="text" min="1" max="20" step="1">
+				</div>
+				<div class="field">
+					<label for="slight-pause">Slight pause at end of paragraphs?</label>
+					<div><input id="slight-pause" type="checkbox"></div>
+				</div>
+				<div class="field">
+					<label for="text-background-color">Text Background Color</label>
+					<input id="text-background-color" type="text">
+				</div>
+				<div class="field">
+					<label for="text-color">Text Color</label>
+					<input id="text-color" type="text">
+				</div>
+				<div class="field">
+					<label for="highlight-background-color">Highlight Background Color</label>
+					<input id="highlight-background-color" type="text">
+				</div>
+				<div class="field">
+					<label for="highlight-color">Highlight Color</label>
+					<input id="highlight-color" type="text">
+				</div>
+				<div class="field">
+					<label for="font-size">Font Size</label>
+					<input id="font-size" type="text">
+				</div>
+				<div class="field">
+					<label for="line-height">Line Height</label>
+					<input id="line-height" type="number" min="0.1" max="3.0" step="0.1">
+				</div>
+				<div class="field">
+					<label for="font-family">Font Family</label>
+					<input id="font-family" type="text">
+				</div>
+				<div class="field">
+					<label for="text-align">Text Align</label>
+					<select id="text-align">
+						<option value="left">Left</option>
+						<option value="Justify">Justify</option>
+						<option value="right">Right</option>
+						<option value="center">Center</option>
+					</select>
+				</div>
+				<div class="buttons">
+					<button id="save" class="button" type="submit" data-custom-modal-closer="form">Save</button>
+					<button id="close" class="button" data-custom-modal-closer="form">Close</button>
+				</div>
+			</form>
+		</div>
 	</main>
+	<script type="module" src="js/components/CustomModal.js"></script>
 	<script type="module" src="js/reader.js"></script>
 </body>
 </html>
