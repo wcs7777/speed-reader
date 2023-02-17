@@ -42,8 +42,6 @@ body {
 	background-color: hsl(230, 65%, 50%);
 }
 
-.buttons {
-	align-self: center;
 .button-main {
 	background-color: hsl(204, 68%, 43%);
 	height: 1.8rem;
@@ -53,8 +51,15 @@ body {
 	background-color: hsl(204, 68%, 20%);
 }
 
-.buttons > .button + .button {
-	margin-left: 0.625em;
+.buttons {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-end;
+	align-self: center;
+	gap: 0.7em;
+	margin: 0 auto;
 }
 
 .hide {
