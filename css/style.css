@@ -44,6 +44,13 @@ body {
 
 .buttons {
 	align-self: center;
+.button-main {
+	background-color: hsl(204, 68%, 43%);
+	height: 1.8rem;
+}
+
+.button-main:is(:hover, :focus) {
+	background-color: hsl(204, 68%, 20%);
 }
 
 .buttons > .button + .button {
