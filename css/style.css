@@ -65,3 +65,31 @@ body {
 .hide {
 	display: none;
 }
+
+.textarea {
+	transition: all 0.2s;
+	box-sizing: border-box;
+	outline: none;
+	border: 2px solid transparent;
+	border-radius: var(--minor-border-radius);
+	background-color: hsl(0, 0%, 93.3%);
+	padding: 1em;
+	width: 85vw;
+	height: 80vh;
+	resize: none;
+	color: hsl(0, 0%, 20%);
+	font-size: 1em;
+	line-height: 1.4;
+}
+
+.textarea:hover {
+	cursor: pointer;
+	background-color: hsl(0, 0%, 97.3%);
+}
+
+.textarea:focus {
+	cursor: text;
+	border-color: hsl(0, 0%, 05%);
+	background-color: hsl(0, 0%, 99.3%);
+	color: hsl(0, 0%, 05%);
+}
