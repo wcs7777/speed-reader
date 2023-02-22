@@ -13,10 +13,10 @@
 			<button id="new-text" class="button">New Text</button>
 		<div id="controls" class="buttons">
 			<button id="read" class="button button-main">Read</button>
-			<button id="settings" class="button" data-custom-modal-opener="form">Settings</button>
+			<button id="settings" class="button" data-custom-modal-opener="settings">Settings</button>
 		</div>
-		<div is="custom-modal" data-custom-modal="form">
-			<form class="form" action="#">
+		<div is="custom-modal" data-custom-modal="settings">
+			<form id="settings" class="form" action="#">
 				<div class="field">
 					<label for="words-per-minute">Words Per Minute</label>
 					<input id="words-per-minute" type="number" min="60" max="6000" step="10">
@@ -67,8 +67,11 @@
 					</select>
 				</div>
 				<div class="buttons">
-					<button id="save" class="button" type="submit" data-custom-modal-closer="form">Save</button>
-					<button id="close" class="button" data-custom-modal-closer="form">Close</button>
+					<button id="save" class="button" type="submit" data-custom-modal-closer="settings">Save</button>
+					<button id="close" class="button" data-custom-modal-closer="settings">Close</button>
+				</div>
+			</form>
+		</div>
 				</div>
 			</form>
 		</div>
