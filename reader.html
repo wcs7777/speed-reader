@@ -10,8 +10,8 @@
 </head>
 <body>
 	<main>
-			<button id="new-text" class="button">New Text</button>
 		<div id="controls" class="buttons">
+			<button id="new-text" class="button" data-custom-modal-opener="new-text">New Text</button>
 			<button id="read" class="button button-main">Read</button>
 			<button id="settings" class="button" data-custom-modal-opener="settings">Settings</button>
 		</div>
@@ -72,6 +72,12 @@
 				</div>
 			</form>
 		</div>
+		<div is="custom-modal" data-custom-modal="new-text">
+			<form action="#" class="form">
+				<textarea id="nex-text" class="textarea" wrap="off"></textarea>
+				<div class="buttons">
+					<button id="save" class="button" type="submit" data-custom-modal-closer="new-text">Save</button>
+					<button id="close" class="button" data-custom-modal-closer="new-text">Close</button>
 				</div>
 			</form>
 		</div>
