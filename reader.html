@@ -15,8 +15,8 @@
 			<button id="read" class="button button-main">Read</button>
 			<button id="settings" class="button" data-custom-modal-opener="settings">Settings</button>
 		</div>
-		<div is="custom-modal" data-custom-modal="settings">
-			<form id="settings" class="form" action="#">
+		<dialog is="custom-modal" data-custom-modal="settings">
+			<form id="settings" class="form" action="#" method="dialog">
 				<div class="field">
 					<label for="words-per-minute">Words Per Minute</label>
 					<input id="words-per-minute" type="number" min="60" max="6000" step="10">
@@ -71,16 +71,16 @@
 					<button id="close" class="button" data-custom-modal-closer="settings">Close</button>
 				</div>
 			</form>
-		</div>
-		<div is="custom-modal" data-custom-modal="new-text">
-			<form action="#" class="form">
+		</dialog>
+		<dialog is="custom-modal" data-custom-modal="new-text">
+			<form class="form" action="#" method="dialog">
 				<textarea id="nex-text" class="textarea" wrap="off"></textarea>
 				<div class="buttons">
 					<button id="save" class="button" type="submit" data-custom-modal-closer="new-text">Save</button>
 					<button id="close" class="button" data-custom-modal-closer="new-text">Close</button>
 				</div>
 			</form>
-		</div>
+		</dialog>
 	</main>
 	<script type="module" src="js/components/CustomModal.js"></script>
 	<script type="module" src="js/reader.js"></script>
