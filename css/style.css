@@ -1,5 +1,6 @@
 :root {
-	--minor-border-radius: 0.375em;
+	--top-level-border-radius: 0.5em;
+	--element-border-radius: 0.375em;
   box-sizing: border-box;
 	font: 16px/1.5 Arial, sans-serif;
 }
@@ -19,8 +20,8 @@ body {
 	transition: background-color 0.3s ease;
 	cursor: pointer;
 	box-sizing: content-box;
-	border-radius: var(--minor-border-radius);
 	border: 0;
+	border-radius: var(--element-border-radius);
 	background-color: hsl(230, 65%, 30%);
 	padding: 0.25rem 0.76rem;
 	min-width: 5.625em;
@@ -60,7 +61,7 @@ body {
 	box-sizing: border-box;
 	outline: 0;
 	border: 2px solid transparent;
-	border-radius: var(--minor-border-radius);
+	border-radius: var(--element-border-radius);
 	background-color: hsl(0, 0%, 93.3%);
 	padding: 1em;
 	width: 85vw;
