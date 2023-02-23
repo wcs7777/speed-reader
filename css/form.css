@@ -33,7 +33,7 @@
 
 .field > :not(label) {
 	flex: 1 0 12.5em;
-	border: none;
+	border: 0;
 	font: inherit;
 }
 

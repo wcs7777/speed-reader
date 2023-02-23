@@ -30,8 +30,8 @@ body {
 	transition: background-color 0.3s ease;
 	cursor: pointer;
 	box-sizing: content-box;
-	border: none;
 	border-radius: var(--minor-border-radius);
+	border: 0;
 	background-color: hsl(230, 65%, 30%);
 	padding: 0.25rem 0.76rem;
 	min-width: 5.625em;
@@ -69,7 +69,7 @@ body {
 .textarea {
 	transition: all 0.2s;
 	box-sizing: border-box;
-	outline: none;
+	outline: 0;
 	border: 2px solid transparent;
 	border-radius: var(--minor-border-radius);
 	background-color: hsl(0, 0%, 93.3%);
