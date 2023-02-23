@@ -9,6 +9,7 @@
 	border-radius: var(--top-level-border-radius);
 	background-color: hsl(4, 1%, 96.1%);
 	padding: 0.625rem;
+	font-size: 0.75em;
 }
 
 @media (min-width: 36em) {
