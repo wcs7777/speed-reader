@@ -41,6 +41,14 @@ body {
 	background-color: hsl(204, 68%, 20%);
 }
 
+.button-secondary {
+	background-color: hsl(226, 67%, 15%);
+}
+
+.button-secondary:is(:hover, :focus) {
+	background-color: hsl(226, 67%, 38%);
+}
+
 .buttons {
 	display: flex;
 	flex-direction: row;
