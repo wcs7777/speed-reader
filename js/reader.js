@@ -1,10 +1,7 @@
-import { CustomModal } from "./components/CustomModal.js";
-import { SpeedReader } from "./components/SpeedReader.js";
 import { $$, byId } from "./utils/dom.js";
 
 const reader = byId("speed-reader");
 const read = byId("read");
-
 read.addEventListener("click", () => {
 	const toggle = !reader.isPaused;
 	reader.isPaused = toggle;
