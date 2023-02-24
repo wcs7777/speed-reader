@@ -7,13 +7,14 @@
 	<title>Speed Reader</title>
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/form.css">
+	<link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
 	<main>
 		<div id="controls" class="buttons">
-			<button id="new-text" class="button" data-custom-modal-opener="new-text">New Text</button>
+			<button id="open-new-text" class="button" data-custom-modal-opener="new-text">New Text</button>
 			<button id="read" class="button button-main">Read</button>
-			<button id="settings" class="button" data-custom-modal-opener="settings">Settings</button>
+			<button id="open-settings" class="button" data-custom-modal-opener="settings">Settings</button>
 		</div>
 		<dialog is="custom-modal" data-custom-modal="settings">
 			<form id="settings" class="form" action="#" method="dialog">
@@ -73,8 +74,8 @@
 			</form>
 		</dialog>
 		<dialog is="custom-modal" data-custom-modal="new-text">
-			<form class="form" action="#" method="dialog">
-				<textarea id="nex-text" class="textarea" wrap="off"></textarea>
+			<form id="new-text" class="form" action="#" method="dialog">
+				<textarea id="text" class="textarea" wrap="off" autofocus></textarea>
 				<div class="buttons">
 					<button id="save" class="button" type="submit" data-custom-modal-closer="new-text">Save</button>
 					<button id="close" class="button" data-custom-modal-closer="new-text">Close</button>
