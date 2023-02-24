@@ -65,6 +65,36 @@ export function form2object(form) {
 }
 
 /**
+ * @param {HTMLFormElement} form
+ * @param {object} obj
+ * @returns {HTMLFormElement}
+ */
+export function populateForm(form, obj) {
+	for (const control of form.elements) {
+		const key = kebab2camel(control.id ?? control.name ?? "");
+		switch (control.type) {
+			case "radio":
+				if (control.value === obj[key]) {
+					control.checked = true;
+				}
+				break;
+			case "checkbox":
+				control.checked = obj[key];
+				break;
+			case "select-multiple":
+				for (const option of obj[key]) {
+					$(`option[value="${option}"`, control).selected = true;
+				}
+				break;
+			default:
+				control.value = obj[key];
+				break;
+		}
+	}
+	return form;
+}
+
+/**
  * @param {object} values
  * @param {object} fallback
  * @param {string[]} keys
