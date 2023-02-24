@@ -229,6 +229,12 @@ export class SpeedReader extends HTMLDivElement {
 			if (!this.isPaused && !this.isParagraphInRange()) {
 				this.startReading().catch(console.error);
 			}
+			this.dispatchEvent(
+				new CustomEvent(
+					"speed-reader-paused",
+					{ detail: { paused: this.isPaused } },
+				),
+			);
 		}
 	}
 
