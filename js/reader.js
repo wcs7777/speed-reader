@@ -1,8 +1,14 @@
-import { $$, byId, form2object } from "./utils/dom.js";
+import {
+	$$,
+	byId,
+	form2object,
+	populateForm
+} from "./utils/dom.js";
 
 const reader = byId("speed-reader");
 const read = byId("read");
 const text = byId("text");
+const settingsForm = byId("settings");
 read.addEventListener("click", () => {
 	const toggle = !reader.isPaused;
 	reader.isPaused = toggle;
@@ -38,4 +44,11 @@ byId("paste-text").addEventListener("click", async (e) => {
 byId("new-text").addEventListener("submit", (e) => {
 	e.preventDefault();
 	reader.text = form2object(e.target).text;
+});
+byId("open-settings").addEventListener("click", () => {
+	populateForm(settingsForm, reader.settings);
+});
+settingsForm.addEventListener("submit", (e) => {
+	e.preventDefault();
+	reader.settings = form2object(e.target);
 });
