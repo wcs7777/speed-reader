@@ -58,9 +58,17 @@ body {
 	align-self: center;
 	gap: 0.7em;
 	margin: 0 auto;
+	width: 100%;
 }
 
 .hide {
 	display: none;
 }
 
+.flex-justify-end {
+	justify-content: flex-end;
+}
+
+.minor-font-size {
+	font-size: 0.6rem;
+}
