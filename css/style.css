@@ -40,8 +40,8 @@ body {
 }
 
 .button-main {
+	order: 1;
 	background-color: hsl(204, 68%, 43%);
-	height: 1.8rem;
 }
 
 .button-main:is(:hover, :focus) {
@@ -58,14 +58,27 @@ body {
 
 .buttons {
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	flex-wrap: wrap;
-	justify-content: center;
-	align-items: flex-end;
+	justify-content: flex-end;
+	align-items: center;
 	align-self: center;
 	gap: 0.7em;
 	margin: 0 auto;
 	width: 100%;
+}
+
+@media (min-width: 420px) {
+	.buttons {
+		flex-direction: row;
+		justify-content: center;
+		align-items: flex-end;
+	}
+
+	.button-main {
+		order: 0;
+		height: 1.8rem;
+	}
 }
 
 .hide {
