@@ -11,3 +11,9 @@
 	font-family: var(--speed-reader-font-family);
 	text-align: var(--speed-reader-text-align);
 }
+
+@media (min-width: 420px) {
+	.speed-reader {
+		max-width: 90%;
+	}
+}
