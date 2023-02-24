@@ -1,0 +1,13 @@
+.speed-reader {
+	display: block;
+	margin: 0;
+	background-color: var(--speed-reader-text-background-color);
+	padding: 10px 25px;
+	min-width: 50px;
+	min-height: 50px;
+	color: var(--speed-reader-text-color);
+	font-size: var(--speed-reader-font-size);
+	line-height: var(--speed-reader-line-height);
+	font-family: var(--speed-reader-font-family);
+	text-align: var(--speed-reader-text-align);
+}

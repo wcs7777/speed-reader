@@ -21,7 +21,6 @@ import {
 } from "./ParagraphSpeedReader.js";
 
 const averageWordSize = 5.7;
-const paragraphMargin = 10;
 const attrs = {
 	isPaused: "data-is-paused",
 	paragraphIndex: "data-paragraph-index",
@@ -47,19 +46,7 @@ const template = createTemplate(`
 		${cssVariables.lineHeight}: ${defaultSettings.lineHeight};
 		${cssVariables.fontFamily}: ${defaultSettings.fontFamily};
 		${cssVariables.textAlign}: ${defaultSettings.textAlign};
-		${ParagraphSpeedReader.cssVariables.margin}: ${paragraphMargin}px 0;
-
-		display: block;
-		margin: 0;
-		background-color: var(${cssVariables.textBackgroundColor});
-		padding: ${paragraphMargin}px ${paragraphMargin * 2.5}px;
-		min-width: 50px;
-		min-height: 50px;
-		color: var(${cssVariables.textColor});
-		font-size: var(${cssVariables.fontSize});
-		line-height: var(${cssVariables.lineHeight});
-		font-family: var(${cssVariables.fontFamily});
-		text-align: var(${cssVariables.textAlign});
+		${ParagraphSpeedReader.cssVariables.margin}: 10px 0;
 	}
 </style>
 <slot></slot>
@@ -77,6 +64,7 @@ export class SpeedReader extends HTMLDivElement {
 		);
 		this.isPaused = this.isPaused ?? false;
 		this.settings = defaultSettings;
+		this.classList.add("speed-reader");
 	}
 
 	connectedCallback() {
