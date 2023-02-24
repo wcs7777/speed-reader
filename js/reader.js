@@ -1,7 +1,8 @@
-import { $$, byId } from "./utils/dom.js";
+import { $$, byId, form2object } from "./utils/dom.js";
 
 const reader = byId("speed-reader");
 const read = byId("read");
+const text = byId("text");
 read.addEventListener("click", () => {
 	const toggle = !reader.isPaused;
 	reader.isPaused = toggle;
@@ -20,3 +21,21 @@ for (const modal of $$('[is=custom-modal]')) {
 		reader.isPaused = isPaused;
 	});
 }
+byId("clear-text").addEventListener("click", (e) => {
+	e.preventDefault();
+	text.value = "";
+	text.focus();
+});
+byId("paste-text").addEventListener("click", async (e) => {
+	try {
+		e.preventDefault();
+		text.value = await navigator.clipboard.readText();
+		text.focus();
+	} catch (error) {
+		console.error(error);
+	}
+});
+byId("new-text").addEventListener("submit", (e) => {
+	e.preventDefault();
+	reader.text = form2object(e.target).text;
+});
