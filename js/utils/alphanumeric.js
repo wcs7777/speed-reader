@@ -17,6 +17,16 @@ export function kebab2camel(kebab) {
 }
 
 /**
+ * @param {string} camel
+ * @returns {string}
+ */
+export function camel2kebab(camel) {
+	return camel
+		.replaceAll(/(?<!^)([A-Z])/g, (_, p1) => "-" + p1)
+		.toLowerCase();
+}
+
+/**
  * @param {string[]} words
  * @param {number} chunkLength
  * @returns {string[][]}

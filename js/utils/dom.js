@@ -1,4 +1,4 @@
-import { kebab2camel } from "./alphanumeric.js";
+import { camel2kebab, kebab2camel } from "./alphanumeric.js";
 import { toArray } from "./mixed.js";
 
 /**
@@ -60,6 +60,24 @@ export function form2object(form) {
 			`input[type="radio"][name="${name}"]`, form
 		)
 			.find((radio) => radio.checked)?.value;
+	}
+	return obj;
+}
+
+/**
+ * @param {object} values
+ * @param {object} fallback
+ * @param {string[]} keys
+ * @param {string} property
+ * @returns {object}
+ */
+export function validateCssProperties(values, fallback, keys, property) {
+	const obj = {};
+	const prop = property ?? camel2kebab(keys);
+	for (const key of toArray(keys)) {
+		obj[key] = (
+			CSS.supports(prop, values[key]) ? values[key] : fallback[key]
+		);
 	}
 	return obj;
 }
