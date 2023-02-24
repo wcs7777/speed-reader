@@ -5,6 +5,8 @@
 	padding: 10px 25px;
 	min-width: 50px;
 	min-height: 50px;
+	overflow-x: hidden;
+	overflow-y: auto;
 	color: var(--speed-reader-text-color);
 	font-size: var(--speed-reader-font-size);
 	line-height: var(--speed-reader-line-height);

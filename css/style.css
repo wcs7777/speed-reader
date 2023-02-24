@@ -22,6 +22,8 @@ body {
 	align-items: center;
 	gap: 1.2em;
 	padding: 1.4em;
+	max-width: 100vw;
+	max-height: 100vh;
 }
 
 .button {

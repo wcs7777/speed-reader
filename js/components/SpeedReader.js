@@ -50,6 +50,8 @@ const template = createTemplate(`
 
 		box-shadow: -2px 1px 7px 2px rgba(0, 0, 0, 0.3);
 		border-radius: var(--element-border-radius);
+		width: fit-content;
+		height: fit-content;
 	}
 </style>
 <slot></slot>
