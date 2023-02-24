@@ -75,6 +75,10 @@
 		</dialog>
 		<dialog is="custom-modal" data-custom-modal="new-text">
 			<form id="new-text" class="form" action="#" method="dialog">
+				<div class="buttons flex-justify-end minor-font-size">
+					<button id="clear-text" class="button button-secondary">Clear</button>
+					<button id="paste-text" class="button button-secondary">Paste</button>
+				</div>
 				<textarea id="text" class="textarea" wrap="off" autofocus></textarea>
 				<div class="buttons">
 					<button id="save" class="button" type="submit" data-custom-modal-closer="new-text">Save</button>
