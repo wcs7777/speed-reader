@@ -3,14 +3,17 @@ import {
 	findIndexInRanges,
 	separateChunks,
 	splitParagraphs,
-	splitWords
+	splitWords,
+	threshold
 } from "../utils/alphanumeric.js";
 import defaultSettings from "../utils/defaultSettings.js";
 import {
+	byId,
 	createTemplate,
 	removeAllChildren,
 	tag,
-	templateContent
+	templateContent,
+	validateCssProperties
 } from "../utils/dom.js";
 import { boolEqualsLoose, sleep } from "../utils/mixed.js";
 import Walker from "../utils/Walker.js";
@@ -68,11 +71,19 @@ export class SpeedReader extends HTMLDivElement {
 			this.attributeChangedCallback.bind(this), []
 		);
 		this.isPaused = this.isPaused ?? false;
-		this.settings = defaultSettings;
 		this.classList.add("speed-reader");
 	}
 
 	connectedCallback() {
+		this.min = {
+			wpm: byId("words-per-minute")?.min || 60,
+			wpc: byId("words-per-chunk")?.min || 1,
+		};
+		this.max = {
+			wpm: byId("words-per-minute")?.max || 6000,
+			wpc: byId("words-per-chunk")?.max || 20,
+		};
+		this.settings = defaultSettings;
 		this.text = this.textContent;
 		if (!this.isPaused) {
 			this.startReading().catch(console.error);
@@ -157,7 +168,7 @@ export class SpeedReader extends HTMLDivElement {
 	 * @param {defaultSettings} newSettings
 	 */
 	set settings(newSettings) {
-		this._settings = newSettings;
+		this._settings = this.validateSettings(newSettings);
 		for (const [key, property] of Object.entries(cssVariables)) {
 			this.style.setProperty(property, this.settings[key]);
 		}
@@ -408,6 +419,39 @@ export class SpeedReader extends HTMLDivElement {
 
 	hasNextParagraph() {
 		return this._paragraphs.hasNext();
+	}
+
+	validateSettings(settings) {
+		const currentSettings = this.settings;
+		return {
+			...settings,
+			wordsPerMinute: threshold(
+				this.min.wpm,
+				settings.wordsPerMinute || currentSettings.wordsPerMinute,
+				this.max.wpm,
+			),
+			wordsPerChunk: threshold(
+				this.min.wpc,
+				settings.wordsPerChunk || currentSettings.wordsPerChunk,
+				this.max.wpc,
+			),
+			...validateCssProperties(
+				settings,
+				currentSettings,
+				["textBackgroundColor", "highlightBackgroundColor"],
+				"background-color",
+			),
+			...validateCssProperties(
+				settings,
+				currentSettings,
+				["textColor", "highlightColor"],
+				"color",
+			),
+			...validateCssProperties(settings, currentSettings, "fontSize"),
+			...validateCssProperties(settings, currentSettings, "lineHeight"),
+			...validateCssProperties(settings, currentSettings, "fontFamily"),
+			...validateCssProperties(settings, currentSettings, "textAlign"),
+		};
 	}
 
 }
