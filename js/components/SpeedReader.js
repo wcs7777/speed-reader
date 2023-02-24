@@ -122,7 +122,6 @@ export class SpeedReader extends HTMLDivElement {
 		try {
 			let milliseconds;
 			while ((milliseconds = this.nextMilliseconds()) > 0) {
-				console.log({ milliseconds });
 				await sleep(milliseconds);
 				while (this.isPaused) {
 					await sleep(100);
