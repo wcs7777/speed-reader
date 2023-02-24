@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Speed Reader</title>
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/speed-reader.css">
 	<link rel="stylesheet" href="css/form.css">
 	<link rel="stylesheet" href="css/modal.css">
 </head>
@@ -15,6 +16,12 @@
 			<button id="open-new-text" class="button" data-custom-modal-opener="new-text">New Text</button>
 			<button id="read" class="button button-main">Read</button>
 			<button id="open-settings" class="button" data-custom-modal-opener="settings">Settings</button>
+		</div>
+		<div is="speed-reader" data-is-paused="true">
+			 Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam atque animi corporis in omnis? Dolorum laudantium ea facilis soluta repellendus, minima modi est animi, voluptate consectetur, labore doloremque praesentium id!
+			 Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam atque animi corporis in omnis? Dolorum laudantium ea facilis soluta repellendus, minima modi est animi, voluptate consectetur, labore doloremque praesentium id!
+			 Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam atque animi corporis in omnis? Dolorum laudantium ea facilis soluta repellendus, minima modi est animi, voluptate consectetur, labore doloremque praesentium id!
+			 Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam atque animi corporis in omnis? Dolorum laudantium ea facilis soluta repellendus, minima modi est animi, voluptate consectetur, labore doloremque praesentium id!
 		</div>
 		<dialog is="custom-modal" data-custom-modal="settings">
 			<form id="settings" class="form" action="#" method="dialog">
@@ -87,7 +94,6 @@
 			</form>
 		</dialog>
 	</main>
-	<script type="module" src="js/components/CustomModal.js"></script>
 	<script type="module" src="js/reader.js"></script>
 </body>
 </html>
