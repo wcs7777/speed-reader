@@ -47,6 +47,9 @@ const template = createTemplate(`
 		${cssVariables.fontFamily}: ${defaultSettings.fontFamily};
 		${cssVariables.textAlign}: ${defaultSettings.textAlign};
 		${ParagraphSpeedReader.cssVariables.margin}: 10px 0;
+
+		box-shadow: -2px 1px 7px 2px rgba(0, 0, 0, 0.3);
+		border-radius: var(--element-border-radius);
 	}
 </style>
 <slot></slot>
