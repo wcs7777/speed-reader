@@ -8,8 +8,10 @@ const read = byId("read");
 read.addEventListener("click", () => {
 	const toggle = !reader.isPaused;
 	reader.isPaused = toggle;
-	read.textContent = reader.isPaused ? "Read" : "Paused";
 	read.blur();
+});
+reader.addEventListener("speed-reader-paused", (e) => {
+	read.textContent = e.detail.paused ? "Read" : "Pause";
 });
 for (const modal of $$('[is=custom-modal]')) {
 	let isPaused = true;
