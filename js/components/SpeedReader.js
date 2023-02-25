@@ -143,13 +143,13 @@ export class SpeedReader extends HTMLDivElement {
 	 */
 	nextMilliseconds() {
 		let milliseconds = 0;
-		if (!this.currentParagraph?.hasNextChunkText()) {
+		if (!this.paragraph?.hasNextChunkText()) {
 			this.nextParagraph();
 			if (this.settings.slightPause) {
 				milliseconds += 100;
 			}
 		}
-		const length = this.currentParagraph?.nextChunkText()?.text.length;
+		const length = this.paragraph?.nextChunkText()?.text.length;
 		if (length !== undefined) {
 			milliseconds += chunkTextMs(length, this.charactersPerSecond);
 		} else {
@@ -289,8 +289,8 @@ export class SpeedReader extends HTMLDivElement {
 			return defaultOffset;
 		}
 		const chunkText = (
-			this.currentParagraph.isChunkTextInRange() ?
-			this.currentParagraph.chunkTextIndex : 0
+			this.paragraph.isChunkTextInRange() ?
+			this.paragraph.chunkTextIndex : 0
 		);
 		return this.paragraphsRanges
 			.at(this.currentParagraphIndex)
@@ -307,7 +307,7 @@ export class SpeedReader extends HTMLDivElement {
 				this.paragraphsRanges.at(paragraph).chunkTextsRanges, offset
 			);
 			this.paragraphIndex = paragraph;
-			this.currentParagraph.chunkTextIndex = chunkText;
+			this.paragraph.chunkTextIndex = chunkText;
 		}
 	}
 
@@ -341,7 +341,7 @@ export class SpeedReader extends HTMLDivElement {
 	/**
 	 * @returns {ParagraphSpeedReader}
 	 */
-	get currentParagraph() {
+	get paragraph() {
 		return this._paragraphs.current;
 	}
 
@@ -392,10 +392,10 @@ export class SpeedReader extends HTMLDivElement {
 	 * @returns {ChunkText}
 	 */
 	toNextChunkText() {
-		if (!this.currentParagraph?.hasNextChunkText()) {
+		if (!this.paragraph?.hasNextChunkText()) {
 			return this.nextParagraph()?.toFirstChunkText();
 		} else {
-			return this.currentParagraph?.nextChunkText();
+			return this.paragraph?.nextChunkText();
 		}
 	}
 
@@ -403,10 +403,10 @@ export class SpeedReader extends HTMLDivElement {
 	 * @returns {ChunkText}
 	 */
 	toPreviousChunkText() {
-		if (!this.currentParagraph?.hasPreviousChunkText()) {
+		if (!this.paragraph?.hasPreviousChunkText()) {
 			return this.previousParagraph()?.toLastChunkText();
 		} else {
-			return this.currentParagraph?.previousChunkText();
+			return this.paragraph?.previousChunkText();
 		}
 	}
 
