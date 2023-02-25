@@ -57,6 +57,11 @@ const shortcutsManager = new EventsManager({
 			listener: () => speedReader.rewindParagraphs(),
 		}),
 		createOnKeydown({
+			keys: "t",
+			caseSensitive: false,
+			listener: () => speedReader.paragraph.alignChunkTextToTop(),
+		}),
+		createOnKeydown({
 			keys: "n",
 			caseSensitive: false,
 			listener: () => openNewText.click(),

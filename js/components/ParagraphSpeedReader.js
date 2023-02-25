@@ -71,6 +71,14 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 		});
 	}
 
+	alignChunkTextToTop() {
+		this.chunkText.scrollIntoView({
+			behavior: "smooth",
+			block: "start",
+			inline: "nearest",
+		});
+	}
+
 	/**
 	 * @returns {ChunkText[]}
 	 */
