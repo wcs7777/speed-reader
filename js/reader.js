@@ -62,10 +62,7 @@ const shortcutsManager = new EventsManager({
 		createOnKeydown({
 			keys: "c",
 			caseSensitive: false,
-			listener: () => {
-				controls.classList.toggle("hide");
-				console.log("toggle controls visibility");
-			},
+			listener: () => controls.classList.toggle("hide"),
 		}),
 	],
 	on: true,
