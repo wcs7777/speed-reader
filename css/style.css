@@ -112,16 +112,16 @@
 	}
 }
 
-.hide {
-	display: none;
-}
-
 .controls {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	gap: 0.6em;
+}
+
+.hide {
+	display: none;
 }
 
 .flex-justify-end {
