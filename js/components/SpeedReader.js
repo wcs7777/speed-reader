@@ -391,17 +391,11 @@ export class SpeedReader extends HTMLDivElement {
 	 * @returns {ChunkText}
 	 */
 	toNextChunkText() {
-		if (
-			!this.currentParagraph?.hasNextChunkText() &&
-			this.hasNextParagraph() &&
-			true
-		) {
-			this.nextParagraph();
+		if (!this.currentParagraph?.hasNextChunkText()) {
+			return this.nextParagraph()?.toFirstChunkText();
+		} else {
+			return this.currentParagraph?.nextChunkText();
 		}
-		return (
-			this.currentParagraph.nextChunkText() ??
-			this.currentParagraph.toLastChunkText()
-		);
 	}
 
 	/**
@@ -409,7 +403,7 @@ export class SpeedReader extends HTMLDivElement {
 	 */
 	toPreviousChunkText() {
 		if (!this.currentParagraph?.hasPreviousChunkText()) {
-			return this.previousParagraph().toLastChunkText();
+			return this.previousParagraph()?.toLastChunkText();
 		} else {
 			return this.currentParagraph?.previousChunkText();
 		}
