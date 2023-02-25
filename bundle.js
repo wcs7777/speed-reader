@@ -101,20 +101,6 @@
 		return -1;
 	}
 
-	const defaultSettings = {
-		wordsPerMinute: 300,
-		wordsPerChunk: 6,
-		slightPause: true,
-		textBackgroundColor: "#FFFFFF",
-		textColor: "#B3B3B3",
-		highlightBackgroundColor: "#FFFFFF",
-		highlightColor: "#000000",
-		fontSize: "20px",
-		lineHeight: 1.5,
-		fontFamily: "Arial",
-		textAlign: "left",
-	};
-
 	/**
 	 * @param {any|any[]} value
 	 * @returns {any[]}
@@ -331,6 +317,94 @@
 		}
 	}
 
+	const attrs$3 = {
+		name: "data-custom-modal",
+		opener: "data-custom-modal-opener",
+		closer: "data-custom-modal-closer",
+	};
+
+	class CustomModal extends HTMLDialogElement {
+
+		constructor() {
+			super();
+			this._isModalOpen = false;
+			this.classList.add("modal");
+		}
+
+		connectedCallback() {
+			this.setup();
+		}
+
+		setup() {
+			const open = this.open.bind(this);
+			const close = this.close.bind(this);
+			for (const opener of $$(`[${attrs$3.opener}="${this.name}"]`)) {
+				opener.addEventListener('click', open);
+			}
+			for (const closer of $$(`[${attrs$3.closer}="${this.name}"]`)) {
+				closer.addEventListener('click', close);
+			}
+			this.addEventListener("click", (e) => {
+				if (this.isModalOpen && e.target === e.currentTarget) {
+					this.close();
+				}
+			});
+		}
+
+		static get attrs() {
+			return attrs$3;
+		}
+
+		get name() {
+			return this.getAttribute(attrs$3.name);
+		}
+
+		/**
+		 * @returns {boolean}
+		 */
+		get isModalOpen() {
+			return this._isModalOpen;
+		}
+
+		/**
+		 * @param {boolean} open
+		 */
+		set isModalOpen(open) {
+			if (open != this.isModalOpen) {
+				open ? this.open() : this.close();
+			}
+		}
+
+		open() {
+			this.showModal();
+			this._isModalOpen = true;
+			this.dispatchEvent(new CustomEvent("modal-opened"));
+		}
+
+		close() {
+			super.close();
+			this._isModalOpen = false;
+			this.dispatchEvent(new CustomEvent("modal-closed"));
+		}
+
+	}
+
+	customElements.define("custom-modal", CustomModal, { extends: "dialog" });
+
+	const defaultSettings = {
+		wordsPerMinute: 300,
+		wordsPerChunk: 6,
+		slightPause: true,
+		textBackgroundColor: "#FFFFFF",
+		textColor: "#B3B3B3",
+		highlightBackgroundColor: "#FFFFFF",
+		highlightColor: "#000000",
+		fontSize: "20px",
+		lineHeight: 1.5,
+		fontFamily: "Arial",
+		textAlign: "left",
+	};
+
 	class Walker extends Array {
 
 		constructor(...args) {
@@ -460,7 +534,7 @@
 
 	}
 
-	const attrs$3 = {
+	const attrs$2 = {
 		isHighlighted: "data-is-highlighted",
 	};
 	const cssVariables$2 = {
@@ -499,7 +573,7 @@
 		}
 
 		static get attrs() {
-			return attrs$3;
+			return attrs$2;
 		}
 
 		static get cssVariables() {
@@ -507,11 +581,11 @@
 		}
 
 		static get observedAttributes() {
-			return Object.values(attrs$3);
+			return Object.values(attrs$2);
 		}
 
 		attributeChangedCallback(name, oldValue, newValue) {
-			if (name === attrs$3.isHighlighted && oldValue != newValue) {
+			if (name === attrs$2.isHighlighted && oldValue != newValue) {
 				this.isHighlighted = newValue;
 			}
 		}
@@ -534,7 +608,7 @@
 		 * @returns {boolean}
 		 */
 		get isHighlighted() {
-			return boolEqualsLoose(true, this.getAttribute(attrs$3.isHighlighted));
+			return boolEqualsLoose(true, this.getAttribute(attrs$2.isHighlighted));
 		}
 
 		/**
@@ -547,7 +621,7 @@
 		toggleIsHighlighted(force) {
 			const highlighted = force ?? !this.isHighlighted;
 			if (!boolEqualsLoose(highlighted, this.isHighlighted)) {
-				this.setAttribute(attrs$3.isHighlighted, highlighted);
+				this.setAttribute(attrs$2.isHighlighted, highlighted);
 			}
 			this.classList.toggle("is-highlighted", highlighted);
 		}
@@ -565,14 +639,14 @@
 			is: "chunk-text",
 			textContent: text,
 			attributes: {
-				[attrs$3.isHighlighted]: isHighlighted,
+				[attrs$2.isHighlighted]: isHighlighted,
 			},
 		});
 	}
 
 	customElements.define("chunk-text", ChunkText, { extends: "span" });
 
-	const attrs$2 = {
+	const attrs$1 = {
 		chunkTextIndex: "data-chunk-text-index",
 	};
 	const cssVariables$1 = {
@@ -604,7 +678,7 @@
 		}
 
 		static get attrs() {
-			return attrs$2;
+			return attrs$1;
 		}
 
 		static get cssVariables() {
@@ -612,11 +686,11 @@
 		}
 
 		static get observedAttributes() {
-			return Object.values(attrs$2);
+			return Object.values(attrs$1);
 		}
 
 		attributeChangedCallback(name, oldValue, newValue) {
-			if (name === attrs$2.chunkTextIndex && oldValue != newValue) {
+			if (name === attrs$1.chunkTextIndex && oldValue != newValue) {
 				this.chunkTextIndex = newValue;
 			}
 		}
@@ -629,7 +703,7 @@
 			oldCurrent.value?.toggleIsHighlighted(false);
 			newCurrent.value?.toggleIsHighlighted(true);
 			this.setAttribute(
-				attrs$2.chunkTextIndex, newCurrent.index
+				attrs$1.chunkTextIndex, newCurrent.index
 			);
 		}
 
@@ -775,7 +849,7 @@
 			tagName: "p",
 			is: "paragraph-speed-reader",
 			attributes: {
-				[attrs$2.chunkTextIndex]: -1,
+				[attrs$1.chunkTextIndex]: -1,
 			},
 			children: chunkTexts,
 		});
@@ -786,7 +860,7 @@
 	);
 
 	const averageWordSize = 5.7;
-	const attrs$1 = {
+	const attrs = {
 		isPaused: "data-is-paused",
 		paragraphIndex: "data-paragraph-index",
 	};
@@ -853,7 +927,7 @@
 		}
 
 		static get attrs() {
-			return attrs$1;
+			return attrs;
 		}
 
 		static get cssVariables() {
@@ -861,14 +935,14 @@
 		}
 
 		static get observedAttributes() {
-			return Object.values(attrs$1);
+			return Object.values(attrs);
 		}
 
 		attributeChangedCallback(name, oldValue, newValue) {
 			if (oldValue != newValue) {
-				if (name === attrs$1.paragraphIndex) {
+				if (name === attrs.paragraphIndex) {
 					this.currentParagraphIndex = newValue;
-				} else if (name == attrs$1.isPaused) {
+				} else if (name == attrs.isPaused) {
 					this.isPaused = newValue;
 				}
 			}
@@ -881,7 +955,7 @@
 		paragraphIndexChangeCallback(oldCurrent, newCurrent) {
 			oldCurrent.value?.rewindChunkTexts();
 			newCurrent.value?.assureIntoViewport();
-			this.setAttribute(attrs$1.paragraphIndex, newCurrent.index);
+			this.setAttribute(attrs.paragraphIndex, newCurrent.index);
 		}
 
 		async startReading() {
@@ -1020,7 +1094,7 @@
 		 * @returns {boolean}
 		 */
 		get isPaused() {
-			return boolEqualsLoose(true, this.getAttribute(attrs$1.isPaused));
+			return boolEqualsLoose(true, this.getAttribute(attrs.isPaused));
 		}
 
 		/**
@@ -1029,7 +1103,7 @@
 		set isPaused(paused) {
 			if (!boolEqualsLoose(this._isPaused, paused)) {
 				this._isPaused = paused;
-				this.setAttribute(attrs$1.isPaused, paused);
+				this.setAttribute(attrs.isPaused, paused);
 				if (!this.isPaused && !this.isParagraphInRange()) {
 					this.startReading().catch(console.error);
 				}
@@ -1239,80 +1313,6 @@
 
 	customElements.define("speed-reader", SpeedReader, { extends: "div" });
 
-	const attrs = {
-		name: "data-custom-modal",
-		opener: "data-custom-modal-opener",
-		closer: "data-custom-modal-closer",
-	};
-
-	class CustomModal extends HTMLDialogElement {
-
-		constructor() {
-			super();
-			this._isModalOpen = false;
-			this.classList.add("modal");
-		}
-
-		connectedCallback() {
-			this.setup();
-		}
-
-		setup() {
-			const open = this.open.bind(this);
-			const close = this.close.bind(this);
-			for (const opener of $$(`[${attrs.opener}="${this.name}"]`)) {
-				opener.addEventListener('click', open);
-			}
-			for (const closer of $$(`[${attrs.closer}="${this.name}"]`)) {
-				closer.addEventListener('click', close);
-			}
-			this.addEventListener("click", (e) => {
-				if (this.isModalOpen && e.target === e.currentTarget) {
-					this.close();
-				}
-			});
-		}
-
-		static get attrs() {
-			return attrs;
-		}
-
-		get name() {
-			return this.getAttribute(attrs.name);
-		}
-
-		/**
-		 * @returns {boolean}
-		 */
-		get isModalOpen() {
-			return this._isModalOpen;
-		}
-
-		/**
-		 * @param {boolean} open
-		 */
-		set isModalOpen(open) {
-			if (open != this.isModalOpen) {
-				open ? this.open() : this.close();
-			}
-		}
-
-		open() {
-			this.showModal();
-			this._isModalOpen = true;
-			this.dispatchEvent(new CustomEvent("modal-opened"));
-		}
-
-		close() {
-			super.close();
-			this._isModalOpen = false;
-			this.dispatchEvent(new CustomEvent("modal-closed"));
-		}
-
-	}
-
-	customElements.define("custom-modal", CustomModal, { extends: "dialog" });
-
 	class EventsManager {
 
 		constructor({ target, type, listeners, on }) {
@@ -1415,6 +1415,75 @@
 		};
 	}
 
+	let items = {};
+
+	const memoryStorage = {
+
+		clear() {
+			items = {};
+		},
+
+		/**
+		 * @param {string} keyName
+		 * @returns {string?}
+		 */
+		getItem(keyName) {
+			return items[keyName];
+		},
+
+		/**
+		 * @param {number} index
+		 * @returns {string?}
+		 */
+		key(index) {
+			return Object.keys(items)[index];
+		},
+
+		/**
+		 * @param {string} keyName
+		 */
+		removeItem(keyName) {
+			delete items[keyName];
+		},
+
+		/**
+		 * @param {string} keyName
+		 * @param {string} keyValue
+		 */
+		setItem(keyName, keyValue) {
+			items[keyName] = keyValue;
+		},
+
+		/**
+		 * @returns {number}
+		 */
+		get length() {
+			return Object.keys(items).length;
+		},
+
+	};
+
+	function storageAvailable(type) {
+		let storage;
+		try {
+			storage = window[type];
+			const x = "__storage_test__";
+			storage.setItem(x, x);
+			storage.removeItem(x);
+			return true;
+		} catch (e) {
+			return e instanceof DOMException && (
+				e.code === 22 ||
+				e.code === 1014 ||
+				e.name === "QuotaExceededError" ||
+				e.name === "NS_ERROR_DOM_QUOTA_REACHED") &&
+				storage?.length !== 0
+		}
+	}
+
+	const storage = (
+		storageAvailable("localStorage") ? localStorage : memoryStorage
+	);
 	const wpmChangeRate = 10;
 	const speedReader = getSpeedReader();
 	const read = byId("read");
@@ -1475,6 +1544,7 @@
 		],
 		on: true,
 	});
+	speedReader.settings = storage.getItem("settings") ?? defaultSettings;
 	totalWords.textContent = speedReader.totalWords ?? 0;
 	currentWpm.textContent = speedReader.wordsPerMinute;
 	read.addEventListener("click", () => {
@@ -1527,6 +1597,7 @@
 	settingsForm.addEventListener("submit", (e) => {
 		e.preventDefault();
 		speedReader.settings = form2object(e.target);
+		storage.setItem("settings", JSON.stringify(speedReader.settings));
 	});
 
 	/**
