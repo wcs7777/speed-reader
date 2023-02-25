@@ -158,6 +158,29 @@ export class SpeedReader extends HTMLDivElement {
 	}
 
 	/**
+	 * @returns {number}
+	 */
+	get wordsPerMinute() {
+		return this.settings.wordsPerMinute;
+	}
+
+	/**
+	 * @param {number} wpm
+	 */
+	set wordsPerMinute(wpm) {
+		this.settings.wordsPerMinute = threshold(this.min.wpm, wpm, this.max.wpm);
+		this.charactersPerSecond = (
+			this.settings.wordsPerMinute / 60 * averageWordSize
+		);
+		this.dispatchEvent(
+			new CustomEvent(
+				"words-per-minute-changed",
+				{ detail: { wordsPerMinute: this.wordsPerMinute } },
+			),
+		);
+	}
+
+	/**
 	 * @returns {defaultSettings}
 	 */
 	get settings() {
@@ -169,12 +192,10 @@ export class SpeedReader extends HTMLDivElement {
 	 */
 	set settings(newSettings) {
 		this._settings = this.validateSettings(newSettings);
+		this.wordsPerMinute = newSettings.wordsPerMinute || this.wordsPerMinute;
 		for (const [key, property] of Object.entries(cssVariables)) {
 			this.style.setProperty(property, this.settings[key]);
 		}
-		this.charactersPerSecond = (
-			this.settings.wordsPerMinute / 60 * averageWordSize
-		);
 		const oldChunkTextLength = this.chunkTextLength;
 		this.chunkTextLength = this.settings.wordsPerChunk * averageWordSize;
 		if (oldChunkTextLength !== this.chunkTextLength && this.text) {
@@ -425,11 +446,6 @@ export class SpeedReader extends HTMLDivElement {
 		const currentSettings = this.settings;
 		return {
 			...settings,
-			wordsPerMinute: threshold(
-				this.min.wpm,
-				settings.wordsPerMinute || currentSettings.wordsPerMinute,
-				this.max.wpm,
-			),
 			wordsPerChunk: threshold(
 				this.min.wpc,
 				settings.wordsPerChunk || currentSettings.wordsPerChunk,
