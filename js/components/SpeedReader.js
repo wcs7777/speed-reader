@@ -132,6 +132,7 @@ export class SpeedReader extends HTMLDivElement {
 				}
 			}
 			this.rewindParagraphs();
+			this.isPaused = true;
 		} catch (error) {
 			console.error(error);
 		}
