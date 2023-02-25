@@ -1,5 +1,6 @@
-import { SpeedReader } from "./components/SpeedReader.js";
 import { CustomModal } from "./components/CustomModal.js";
+import { SpeedReader } from "./components/SpeedReader.js";
+import defaultSettings from "./utils/defaultSettings.js";
 import {
 	$$,
 	byId,
@@ -7,7 +8,12 @@ import {
 	populateForm
 } from "./utils/dom.js";
 import { createOnKeydown, EventsManager } from "./utils/events.js";
+import memoryStorage from "./utils/memoryStorage.js";
+import storageAvailable from "./utils/storageAvailable.js";
 
+const storage = (
+	storageAvailable("localStorage") ? localStorage : memoryStorage
+);
 const wpmChangeRate = 10;
 const speedReader = getSpeedReader();
 const read = byId("read");
@@ -68,6 +74,7 @@ const shortcutsManager = new EventsManager({
 	],
 	on: true,
 });
+speedReader.settings = storage.getItem("settings") ?? defaultSettings;
 totalWords.textContent = speedReader.totalWords ?? 0;
 currentWpm.textContent = speedReader.wordsPerMinute;
 read.addEventListener("click", () => {
@@ -120,6 +127,7 @@ openSettings.addEventListener("click", () => {
 settingsForm.addEventListener("submit", (e) => {
 	e.preventDefault();
 	speedReader.settings = form2object(e.target);
+	storage.setItem("settings", JSON.stringify(speedReader.settings));
 });
 
 /**
