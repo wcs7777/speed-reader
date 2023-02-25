@@ -446,6 +446,7 @@ export class SpeedReader extends HTMLDivElement {
 	validateSettings(settings) {
 		const currentSettings = this.settings;
 		return {
+			...currentSettings,
 			...settings,
 			wordsPerChunk: threshold(
 				this.min.wpc,
