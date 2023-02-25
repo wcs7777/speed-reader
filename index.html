@@ -12,10 +12,74 @@
 </head>
 <body>
 	<main class="content">
-		<div id="controls" class="buttons">
-			<button id="open-new-text" class="button" data-custom-modal-opener="new-text">New Text</button>
-			<button id="read" class="button button-main">Read</button>
-			<button id="open-settings" class="button" data-custom-modal-opener="settings">Settings</button>
+		<div id="controls" class="controls">
+			<div class="buttons">
+				<button id="open-new-text" class="button" data-custom-modal-opener="new-text">New Text</button>
+				<button id="read" class="button button-main">Read</button>
+				<button id="open-settings" class="button" data-custom-modal-opener="settings">Settings</button>
+			</div>
+			<p><span id="total-words"></span> words at <span id="current-wpm" class="bold"></span> wpm</p>
+			<div class="shortcuts">
+				<div class="shortcut">
+					<span class="shortcut-action">Backward</span>
+					<samp>
+						<kbd>&larr;</kbd>
+						<kbd>h</kbd>
+					</samp>
+				</div>
+				<div class="shortcut">
+					<span class="shortcut-action">Forward</span>
+					<samp>
+						<kbd>&rarr;</kbd>
+						<kbd>l</kbd>
+					</samp>
+				</div>
+				<div class="shortcut">
+					<span class="shortcut-action">Read/Pause</span>
+					<samp>
+						<kbd>space</kbd>
+						<kbd>k</kbd>
+					</samp>
+				</div>
+				<div class="shortcut">
+					<span class="shortcut-action">Increase speed</span>
+					<samp>
+						<kbd>&uarr;</kbd>
+						<kbd>=</kbd>
+					</samp>
+				</div>
+				<div class="shortcut">
+					<span class="shortcut-action">Decrease speed</span>
+					<samp>
+						<kbd>&darr;</kbd>
+						<kbd>-</kbd>
+					</samp>
+				</div>
+				<div class="shortcut">
+					<span class="shortcut-action">Restart</span>
+					<samp>
+						<kbd>r</kbd>
+					</samp>
+				</div>
+				<div class="shortcut">
+					<span class="shortcut-action">New text</span>
+					<samp>
+						<kbd>n</kbd>
+					</samp>
+				</div>
+				<div class="shortcut">
+					<span class="shortcut-action">Settings</span>
+					<samp>
+						<kbd>s</kbd>
+					</samp>
+				</div>
+				<div class="shortcut">
+					<span class="shortcut-action">Hide/Show controls</span>
+					<samp>
+						<kbd>h</kbd>
+					</samp>
+				</div>
+			</div>
 		</div>
 		<div is="speed-reader"id="speed-reader" data-is-paused="true">
 			Gramps Ford, his chin resting on his hands, his hands on the crook of his cane, was staring irascibly at the five-foot television screen that dominated the room. On the screen, a news commentator was summarizing the day's happenings. Every thirty seconds or so, Gramps would jab the floor with his cane-tip and shout, "Hell, we did that a hundred years ago!"

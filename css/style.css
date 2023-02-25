@@ -68,6 +68,23 @@
 	width: 100%;
 }
 
+.shortcuts {
+	display: none;
+}
+
+.shortcut kbd {
+	display: inline-block;
+	margin: 0 0.wem;
+	box-shadow:
+		0 1px 0 rgba(0, 0, 0, 0.2),
+		0 0 0 2px #ffffff inset;
+	border: 1px solid #cccccc;
+	border-radius: 4px;
+	background-color: #f7f7f7;
+	padding: 0.1em 0.5em;
+	font-family: monospace;
+}
+
 @media (min-width: 520px) {
 	.content {
 		padding: 3vh 7vw;
@@ -83,10 +100,28 @@
 		order: 0;
 		height: 1.8rem;
 	}
+
+	.shortcuts {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap-reverse;
+		justify-content: center;
+		align-items: center;
+		gap: 0.4em 6em;
+		font-size: 0.8em;
+	}
 }
 
 .hide {
 	display: none;
+}
+
+.controls {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 0.6em;
 }
 
 .flex-justify-end {
@@ -95,4 +130,8 @@
 
 .minor-font-size {
 	font-size: 0.6rem;
+}
+
+.bold {
+	font-weight: bold;
 }
