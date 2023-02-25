@@ -1,4 +1,5 @@
 import { SpeedReader } from "./components/SpeedReader.js";
+import { CustomModal } from "./components/CustomModal.js";
 import {
 	$$,
 	byId,
@@ -80,7 +81,7 @@ speedReader.addEventListener("speed-reader-paused", (e) => {
 speedReader.addEventListener("words-per-minute-changed", (e) => {
 	currentWpm.textContent = e.detail.wordsPerMinute;
 });
-for (const modal of $$('[is=custom-modal]')) {
+for (const modal of getCustomModals()) {
 	let isPaused = true;
 	modal.addEventListener("modal-opened", () => {
 		isPaused = speedReader.isPaused;
@@ -126,4 +127,11 @@ settingsForm.addEventListener("submit", (e) => {
  */
 function getSpeedReader() {
 	return byId("speed-reader");
+}
+
+/**
+ * @returns {CustomModal[]}
+ */
+function getCustomModals() {
+	return $$('[is=custom-modal]');
 }
