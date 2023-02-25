@@ -181,6 +181,13 @@ export class SpeedReader extends HTMLDivElement {
 	}
 
 	/**
+	 * @returns {number}
+	 */
+	get totalWords() {
+		return this.paragraphsRanges.at(-1)?.chunkTextsRanges.at(-1)?.end;
+	}
+
+	/**
 	 * @returns {defaultSettings}
 	 */
 	get settings() {
