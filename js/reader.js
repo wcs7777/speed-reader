@@ -21,7 +21,7 @@ const text = byId("text");
 const settingsForm = byId("settings");
 const openNewText = byId("open-new-text");
 const openSettings = byId("open-settings");
-const controls = byId("controls");
+const toggleControls = byId("toggle-controls");
 const totalWords = byId("total-words");
 const currentWpm = byId("current-wpm");
 const shortcutsManager = new EventsManager({
@@ -74,7 +74,7 @@ const shortcutsManager = new EventsManager({
 		createOnKeydown({
 			keys: "c",
 			caseSensitive: false,
-			listener: () => controls.classList.toggle("hide"),
+			listener: () => toggleControls.click(),
 		}),
 	],
 	on: true,

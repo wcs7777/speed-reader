@@ -715,6 +715,14 @@
 			});
 		}
 
+		alignChunkTextToTop() {
+			this.chunkText.scrollIntoView({
+				behavior: "smooth",
+				block: "start",
+				inline: "nearest",
+			});
+		}
+
 		/**
 		 * @returns {ChunkText[]}
 		 */
@@ -979,13 +987,13 @@
 		 */
 		nextMilliseconds() {
 			let milliseconds = 0;
-			if (!this.currentParagraph?.hasNextChunkText()) {
+			if (!this.paragraph?.hasNextChunkText()) {
 				this.nextParagraph();
 				if (this.settings.slightPause) {
 					milliseconds += 100;
 				}
 			}
-			const length = this.currentParagraph?.nextChunkText()?.text.length;
+			const length = this.paragraph?.nextChunkText()?.text.length;
 			if (length !== undefined) {
 				milliseconds += chunkTextMs(length, this.charactersPerSecond);
 			} else {
@@ -1125,8 +1133,8 @@
 				return defaultOffset;
 			}
 			const chunkText = (
-				this.currentParagraph.isChunkTextInRange() ?
-				this.currentParagraph.chunkTextIndex : 0
+				this.paragraph.isChunkTextInRange() ?
+				this.paragraph.chunkTextIndex : 0
 			);
 			return this.paragraphsRanges
 				.at(this.currentParagraphIndex)
@@ -1143,7 +1151,7 @@
 					this.paragraphsRanges.at(paragraph).chunkTextsRanges, offset
 				);
 				this.paragraphIndex = paragraph;
-				this.currentParagraph.chunkTextIndex = chunkText;
+				this.paragraph.chunkTextIndex = chunkText;
 			}
 		}
 
@@ -1177,7 +1185,7 @@
 		/**
 		 * @returns {ParagraphSpeedReader}
 		 */
-		get currentParagraph() {
+		get paragraph() {
 			return this._paragraphs.current;
 		}
 
@@ -1228,10 +1236,10 @@
 		 * @returns {ChunkText}
 		 */
 		toNextChunkText() {
-			if (!this.currentParagraph?.hasNextChunkText()) {
+			if (!this.paragraph?.hasNextChunkText()) {
 				return this.nextParagraph()?.toFirstChunkText();
 			} else {
-				return this.currentParagraph?.nextChunkText();
+				return this.paragraph?.nextChunkText();
 			}
 		}
 
@@ -1239,10 +1247,10 @@
 		 * @returns {ChunkText}
 		 */
 		toPreviousChunkText() {
-			if (!this.currentParagraph?.hasPreviousChunkText()) {
+			if (!this.paragraph?.hasPreviousChunkText()) {
 				return this.previousParagraph()?.toLastChunkText();
 			} else {
-				return this.currentParagraph?.previousChunkText();
+				return this.paragraph?.previousChunkText();
 			}
 		}
 
@@ -1491,7 +1499,7 @@
 	const settingsForm = byId("settings");
 	const openNewText = byId("open-new-text");
 	const openSettings = byId("open-settings");
-	const controls = byId("controls");
+	const toggleControls = byId("toggle-controls");
 	const totalWords = byId("total-words");
 	const currentWpm = byId("current-wpm");
 	const shortcutsManager = new EventsManager({
@@ -1527,6 +1535,11 @@
 				listener: () => speedReader.rewindParagraphs(),
 			}),
 			createOnKeydown({
+				keys: "t",
+				caseSensitive: false,
+				listener: () => speedReader.paragraph.alignChunkTextToTop(),
+			}),
+			createOnKeydown({
 				keys: "n",
 				caseSensitive: false,
 				listener: () => openNewText.click(),
@@ -1539,7 +1552,7 @@
 			createOnKeydown({
 				keys: "c",
 				caseSensitive: false,
-				listener: () => controls.classList.toggle("hide"),
+				listener: () => toggleControls.click(),
 			}),
 		],
 		on: true,
@@ -1578,8 +1591,10 @@
 	byId("paste-text").addEventListener("click", async (e) => {
 		try {
 			e.preventDefault();
-			text.value = await navigator.clipboard.readText();
-			text.focus();
+			if ("clipboard" in navigator) {
+				text.value = await navigator.clipboard.readText();
+				text.focus();
+			}
 		} catch (error) {
 			console.error(error);
 		}
