@@ -79,7 +79,9 @@ const shortcutsManager = new EventsManager({
 	],
 	on: true,
 });
-speedReader.settings = storage.getItem("settings") ?? defaultSettings;
+speedReader.settings = (
+	JSON.parse(storage.getItem("settings")) ?? defaultSettings
+);
 totalWords.textContent = speedReader.totalWords ?? 0;
 currentWpm.textContent = speedReader.wordsPerMinute;
 read.addEventListener("click", () => {
