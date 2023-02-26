@@ -115,7 +115,7 @@ byId("clear-text").addEventListener("click", (e) => {
 byId("paste-text").addEventListener("click", async (e) => {
 	try {
 		e.preventDefault();
-		if ("clipboard" in navigator) {
+		if (navigator?.clipboard?.readText) {
 			text.value = await navigator.clipboard.readText();
 			text.focus();
 		}
