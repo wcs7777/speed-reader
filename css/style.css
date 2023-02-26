@@ -152,6 +152,10 @@
 	.burger-menu-button {
 		display: none;
 	}
+
+	#reset {
+		display: none;
+	}
 }
 
 .hide {

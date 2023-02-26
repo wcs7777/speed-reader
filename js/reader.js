@@ -130,6 +130,10 @@ byId("new-text").addEventListener("submit", (e) => {
 		totalWords.textContent = speedReader.totalWords;
 	}
 });
+byId("reset").addEventListener("click", (e) => {
+	e.preventDefault();
+	speedReader.rewindParagraphs();
+});
 openSettings.addEventListener("click", () => {
 	populateForm(settingsForm, speedReader.settings);
 });
