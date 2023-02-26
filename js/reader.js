@@ -1,7 +1,9 @@
 import { CustomModal } from "./components/CustomModal.js";
 import { SpeedReader } from "./components/SpeedReader.js";
+import { kebab2camel } from "./utils/alphanumeric.js";
 import defaultSettings from "./utils/defaultSettings.js";
 import {
+	$,
 	$$,
 	byId,
 	form2object,
@@ -15,6 +17,7 @@ const storage = (
 	storageAvailable("localStorage") ? localStorage : memoryStorage
 );
 const wpmChangeRate = 10;
+const ui = $(".content");
 const speedReader = getSpeedReader();
 const read = byId("read");
 const text = byId("text");
@@ -79,9 +82,7 @@ const shortcutsManager = new EventsManager({
 	],
 	on: true,
 });
-speedReader.settings = (
-	JSON.parse(storage.getItem("settings")) ?? defaultSettings
-);
+initializeSettings(speedReader, ui);
 totalWords.textContent = speedReader.totalWords ?? 0;
 currentWpm.textContent = speedReader.wordsPerMinute;
 read.addEventListener("click", () => {
@@ -135,12 +136,20 @@ byId("reset").addEventListener("click", (e) => {
 	speedReader.rewindParagraphs();
 });
 openSettings.addEventListener("click", () => {
-	populateForm(settingsForm, speedReader.settings);
+	populateForm(
+		settingsForm,
+		{
+			...speedReader.settings,
+			...getUiStyles(ui),
+		},
+	);
 });
 settingsForm.addEventListener("submit", (e) => {
 	e.preventDefault();
-	speedReader.settings = form2object(e.target);
-	storage.setItem("settings", JSON.stringify(speedReader.settings));
+	const settings = form2object(e.target);
+	speedReader.settings = settings;
+	setUiStyles(ui, settings);
+	storage.setItem("settings", JSON.stringify(settings));
 });
 
 /**
@@ -155,4 +164,26 @@ function getSpeedReader() {
  */
 function getCustomModals() {
 	return $$('[is=custom-modal]');
+}
+
+function initializeSettings(speedReader, ui) {
+	const settings = (
+		JSON.parse(storage.getItem("settings")) ?? defaultSettings
+	);
+	speedReader.settings = settings;
+	setUiStyles(ui, settings);
+}
+
+function getUiStyles(ui) {
+	const style = getComputedStyle(ui);
+	return {
+		uiBackgroundColor: style.getPropertyValue("--ui-background-color"),
+		uiTextColor: style.getPropertyValue("--ui-text-color"),
+	};
+}
+
+function setUiStyles(ui, settings) {
+	for (const property of ["ui-background-color", "ui-text-color"]) {
+		ui.style.setProperty(`--${property}`, settings[kebab2camel(property)]);
+	}
 }

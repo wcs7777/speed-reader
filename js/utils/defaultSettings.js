@@ -10,6 +10,8 @@ const defaultSettings = {
 	lineHeight: 1.5,
 	fontFamily: "sans-serif",
 	textAlign: "left",
+	uiBackgroundColor: "#F3F3F3",
+	uiTextColor: "#000000",
 };
 
 export default defaultSettings;
