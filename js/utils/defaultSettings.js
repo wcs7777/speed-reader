@@ -8,7 +8,7 @@ const defaultSettings = {
 	highlightColor: "#000000",
 	fontSize: "20px",
 	lineHeight: 1.5,
-	fontFamily: "Arial",
+	fontFamily: "sans-serif",
 	textAlign: "left",
 };
 
