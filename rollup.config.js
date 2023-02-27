@@ -1,6 +1,6 @@
 export default [
 	{
-		input: "js/reader.js",
+		input: "js/app.js",
 		output: {
 			file: "bundle.js",
 			format: "iife",
