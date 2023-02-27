@@ -1572,7 +1572,7 @@
 				createOnKeydown({
 					keys: "t",
 					caseSensitive: false,
-					listener: () => speedReader.paragraph.alignChunkTextToTop(),
+					listener: () => speedReader.paragraph?.alignChunkTextToTop(),
 				}),
 				createOnKeydown({
 					keys: "n",
