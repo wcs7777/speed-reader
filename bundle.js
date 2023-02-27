@@ -15,7 +15,7 @@
 	 * @param {string} kebab
 	 * @returns {string}
 	 */
-	function kebab2camel(kebab) {
+	function kebab2camel$1(kebab) {
 		return kebab.replaceAll(/-+(\w)/g, (_, p1) => p1.toUpperCase());
 	}
 
@@ -137,7 +137,7 @@
 	 * @param {string} elementId
 	 * @returns {HTMLElement}
 	 */
-	function byId(elementId) {
+	function byId$1(elementId) {
 		return document.getElementById(elementId);
 	}
 
@@ -155,7 +155,7 @@
 	 * @param {Element} parent
 	 * @returns {Element[]}
 	 */
-	function $$(selectors, parent=document) {
+	function $$$1(selectors, parent=document) {
 		return Array.from(parent.querySelectorAll(selectors));
 	}
 
@@ -167,7 +167,7 @@
 		const obj = {};
 		const radios = new Set();
 		for (const control of form.elements) {
-			const key = kebab2camel(control.id ?? control.name ?? "");
+			const key = kebab2camel$1(control.id ?? control.name ?? "");
 			switch (control.type) {
 				case "radio":
 					if (control.name?.length > 0) {
@@ -178,7 +178,7 @@
 					obj[key] = control.checked;
 					break;
 				case "select-multiple":
-					obj[key] = $$("option", control)
+					obj[key] = $$$1("option", control)
 						.filter((option) => option.selected)
 						.map((option) => option.value);
 					break;
@@ -188,7 +188,7 @@
 			}
 		}
 		for (const name of radios.values()) {
-			obj[kebab2camel(name)] = $$(
+			obj[kebab2camel$1(name)] = $$$1(
 				`input[type="radio"][name="${name}"]`, form
 			)
 				.find((radio) => radio.checked)?.value;
@@ -203,7 +203,7 @@
 	 */
 	function populateForm(form, obj) {
 		for (const control of form.elements) {
-			const key = kebab2camel(control.id ?? control.name ?? "");
+			const key = kebab2camel$1(control.id ?? control.name ?? "");
 			switch (control.type) {
 				case "radio":
 					if (control.value === obj[key]) {
@@ -317,6 +317,54 @@
 		}
 	}
 
+	let items = {};
+
+	const memoryStorage = {
+
+		clear() {
+			items = {};
+		},
+
+		/**
+		 * @param {string} keyName
+		 * @returns {string?}
+		 */
+		getItem(keyName) {
+			return items[keyName];
+		},
+
+		/**
+		 * @param {number} index
+		 * @returns {string?}
+		 */
+		key(index) {
+			return Object.keys(items)[index];
+		},
+
+		/**
+		 * @param {string} keyName
+		 */
+		removeItem(keyName) {
+			delete items[keyName];
+		},
+
+		/**
+		 * @param {string} keyName
+		 * @param {string} keyValue
+		 */
+		setItem(keyName, keyValue) {
+			items[keyName] = keyValue;
+		},
+
+		/**
+		 * @returns {number}
+		 */
+		get length() {
+			return Object.keys(items).length;
+		},
+
+	};
+
 	const attrs$3 = {
 		name: "data-custom-modal",
 		opener: "data-custom-modal-opener",
@@ -338,10 +386,10 @@
 		setup() {
 			const open = this.open.bind(this);
 			const close = this.close.bind(this);
-			for (const opener of $$(`[${attrs$3.opener}="${this.name}"]`)) {
+			for (const opener of $$$1(`[${attrs$3.opener}="${this.name}"]`)) {
 				opener.addEventListener('click', open);
 			}
-			for (const closer of $$(`[${attrs$3.closer}="${this.name}"]`)) {
+			for (const closer of $$$1(`[${attrs$3.closer}="${this.name}"]`)) {
 				closer.addEventListener('click', close);
 			}
 			this.addEventListener("click", (e) => {
@@ -391,7 +439,7 @@
 
 	customElements.define("custom-modal", CustomModal, { extends: "dialog" });
 
-	const defaultSettings = {
+	const defaultSettings$1 = {
 		wordsPerMinute: 300,
 		wordsPerChunk: 6,
 		slightPause: true,
@@ -401,8 +449,10 @@
 		highlightColor: "#000000",
 		fontSize: "20px",
 		lineHeight: 1.5,
-		fontFamily: "Arial",
+		fontFamily: "sans-serif",
 		textAlign: "left",
+		uiBackgroundColor: "#F3F3F3",
+		uiTextColor: "#000000",
 	};
 
 	class Walker extends Array {
@@ -546,11 +596,11 @@
 	:host(.is-highlighted) {
 		background-color: var(
 			${cssVariables$2.highlightBackgroundColor},
-			${defaultSettings.highlightBackgroundColor}
+			${defaultSettings$1.highlightBackgroundColor}
 		);
 		color: var(
 			${cssVariables$2.highlightColor},
-			${defaultSettings.highlightColor}
+			${defaultSettings$1.highlightColor}
 		);
 	}
 </style>
@@ -674,7 +724,7 @@
 		}
 
 		connectedCallback() {
-			this.chunkTexts = $$("[is=chunk-text]", this);
+			this.chunkTexts = $$$1("[is=chunk-text]", this);
 		}
 
 		static get attrs() {
@@ -807,7 +857,7 @@
 		}
 
 		rewindChunkTexts() {
-			$$(`[${ChunkText.attrs.isHighlighted}="true"]`, this)
+			$$$1(`[${ChunkText.attrs.isHighlighted}="true"]`, this)
 				.forEach((chunkText) => chunkText.isHighlighted = false);
 			return this._chunkTexts.rewind();
 		}
@@ -885,14 +935,14 @@
 	const template = createTemplate(`
 <style>
 	:host {
-		${cssVariables.highlightBackgroundColor}: ${defaultSettings.highlightBackgroundColor};
-		${cssVariables.highlightColor}: ${defaultSettings.highlightColor};
-		${cssVariables.textBackgroundColor}: ${defaultSettings.textBackgroundColor};
-		${cssVariables.textColor}: ${defaultSettings.textColor};
-		${cssVariables.fontSize}: ${defaultSettings.fontSize};
-		${cssVariables.lineHeight}: ${defaultSettings.lineHeight};
-		${cssVariables.fontFamily}: ${defaultSettings.fontFamily};
-		${cssVariables.textAlign}: ${defaultSettings.textAlign};
+		${cssVariables.highlightBackgroundColor}: ${defaultSettings$1.highlightBackgroundColor};
+		${cssVariables.highlightColor}: ${defaultSettings$1.highlightColor};
+		${cssVariables.textBackgroundColor}: ${defaultSettings$1.textBackgroundColor};
+		${cssVariables.textColor}: ${defaultSettings$1.textColor};
+		${cssVariables.fontSize}: ${defaultSettings$1.fontSize};
+		${cssVariables.lineHeight}: ${defaultSettings$1.lineHeight};
+		${cssVariables.fontFamily}: ${defaultSettings$1.fontFamily};
+		${cssVariables.textAlign}: ${defaultSettings$1.textAlign};
 		${ParagraphSpeedReader.cssVariables.margin}: 10px 0;
 
 		box-shadow: -2px 1px 7px 2px rgba(0, 0, 0, 0.3);
@@ -920,14 +970,14 @@
 
 		connectedCallback() {
 			this.min = {
-				wpm: byId("words-per-minute")?.min || 60,
-				wpc: byId("words-per-chunk")?.min || 1,
+				wpm: byId$1("words-per-minute")?.min || 60,
+				wpc: byId$1("words-per-chunk")?.min || 1,
 			};
 			this.max = {
-				wpm: byId("words-per-minute")?.max || 6000,
-				wpc: byId("words-per-chunk")?.max || 20,
+				wpm: byId$1("words-per-minute")?.max || 6000,
+				wpc: byId$1("words-per-chunk")?.max || 20,
 			};
-			this.settings = defaultSettings;
+			this.settings = defaultSettings$1;
 			this.text = this.textContent;
 			if (!this.isPaused) {
 				this.startReading().catch(console.error);
@@ -1321,6 +1371,58 @@
 
 	customElements.define("speed-reader", SpeedReader, { extends: "div" });
 
+	/**
+	 * @returns {SpeedReader}
+	 */
+	function getSpeedReader() {
+		return byId("speed-reader");
+	}
+
+	/**
+	 * @returns {CustomModal[]}
+	 */
+	function getCustomModals() {
+		return $$('[is=custom-modal]');
+	}
+
+	/**
+	 * @param {SpeedReader} speedReader
+	 * @param {HTMLElement} ui
+	 * @param {localStorage|memoryStorage} storage
+	 * @param {defaultSettings} defaultSettings
+	 */
+	function initializeSettings(
+		speedReader, ui, storage, defaultSettings
+	) {
+		const settings = (
+			JSON.parse(storage.getItem("settings")) ?? defaultSettings
+		);
+		speedReader.settings = settings;
+		setUiStyles(ui, settings);
+	}
+
+	/**
+	 * @param {HTMLElement} ui
+	 * @returns {{uiBackgroundColor: string; uiTextColor: string}}
+	 */
+	function getUiStyles(ui) {
+		const style = getComputedStyle(ui);
+		return {
+			uiBackgroundColor: style.getPropertyValue("--ui-background-color"),
+			uiTextColor: style.getPropertyValue("--ui-text-color"),
+		};
+	}
+
+	/**
+	 * @param {HTMLElement} ui
+	 * @param {{uiBackgroundColor: string; uiTextColor: string}} settings
+	 */
+	function setUiStyles(ui, settings) {
+		for (const property of ["ui-background-color", "ui-text-color"]) {
+			ui.style.setProperty(`--${property}`, settings[kebab2camel(property)]);
+		}
+	}
+
 	class EventsManager {
 
 		constructor({ target, type, listeners, on }) {
@@ -1423,53 +1525,74 @@
 		};
 	}
 
-	let items = {};
+	const wpmChangeRate = 10;
 
-	const memoryStorage = {
-
-		clear() {
-			items = {};
-		},
-
-		/**
-		 * @param {string} keyName
-		 * @returns {string?}
-		 */
-		getItem(keyName) {
-			return items[keyName];
-		},
-
-		/**
-		 * @param {number} index
-		 * @returns {string?}
-		 */
-		key(index) {
-			return Object.keys(items)[index];
-		},
-
-		/**
-		 * @param {string} keyName
-		 */
-		removeItem(keyName) {
-			delete items[keyName];
-		},
-
-		/**
-		 * @param {string} keyName
-		 * @param {string} keyValue
-		 */
-		setItem(keyName, keyValue) {
-			items[keyName] = keyValue;
-		},
-
-		/**
-		 * @returns {number}
-		 */
-		get length() {
-			return Object.keys(items).length;
-		},
-
-	};
+	/**
+	 * @param {SpeedReader} speedReader
+	 * @param {HTMLButtonElement} openNewText
+	 * @param {HTMLButtonElement} openSettings
+	 * @param {HTMLButtonElement} toggleControls
+	 * @returns {EventsManager}
+	 */
+	function createshortcutsEventsManager(
+		speedReader, openNewText, openSettings, toggleControls
+	) {
+		return new EventsManager({
+			target: document,
+			type: "keydown",
+			listeners: [
+				createOnKeydown({
+					keys: ["ArrowLeft", "h"],
+					caseSensitive: false,
+					listener: () => speedReader.toPreviousChunkText(),
+				}),
+				createOnKeydown({
+					keys: ["ArrowRight", "l"],
+					caseSensitive: false,
+					listener: () => speedReader.toNextChunkText(),
+				}),
+				createOnKeydown({
+					keys: [" ", "k"],
+					caseSensitive: false,
+					listener: () => speedReader.isPaused = !speedReader.isPaused,
+				}),
+				createOnKeydown({
+					keys: ["ArrowUp", "="],
+					listener: () => speedReader.wordsPerMinute += wpmChangeRate,
+				}),
+				createOnKeydown({
+					keys: ["ArrowDown", "-"],
+					listener: () => speedReader.wordsPerMinute -= wpmChangeRate,
+				}),
+				createOnKeydown({
+					keys: "r",
+					caseSensitive: false,
+					listener: () => speedReader.rewindParagraphs(),
+				}),
+				createOnKeydown({
+					keys: "t",
+					caseSensitive: false,
+					listener: () => speedReader.paragraph.alignChunkTextToTop(),
+				}),
+				createOnKeydown({
+					keys: "n",
+					caseSensitive: false,
+					listener: () => openNewText.click(),
+				}),
+				createOnKeydown({
+					keys: "s",
+					caseSensitive: false,
+					listener: () => openSettings.click(),
+				}),
+				createOnKeydown({
+					keys: "c",
+					caseSensitive: false,
+					listener: () => toggleControls.click(),
+				}),
+			],
+			on: true,
+		});
+	}
 
 	function storageAvailable(type) {
 		let storage;
@@ -1492,72 +1615,20 @@
 	const storage = (
 		storageAvailable("localStorage") ? localStorage : memoryStorage
 	);
-	const wpmChangeRate = 10;
+	const ui = $(".content");
 	const speedReader = getSpeedReader();
-	const read = byId("read");
-	const text = byId("text");
-	const settingsForm = byId("settings");
-	const openNewText = byId("open-new-text");
-	const openSettings = byId("open-settings");
-	const toggleControls = byId("toggle-controls");
-	const totalWords = byId("total-words");
-	const currentWpm = byId("current-wpm");
-	const shortcutsManager = new EventsManager({
-		target: document,
-		type: "keydown",
-		listeners: [
-			createOnKeydown({
-				keys: ["ArrowLeft", "h"],
-				caseSensitive: false,
-				listener: () => speedReader.toPreviousChunkText(),
-			}),
-			createOnKeydown({
-				keys: ["ArrowRight", "l"],
-				caseSensitive: false,
-				listener: () => speedReader.toNextChunkText(),
-			}),
-			createOnKeydown({
-				keys: [" ", "k"],
-				caseSensitive: false,
-				listener: () => speedReader.isPaused = !speedReader.isPaused,
-			}),
-			createOnKeydown({
-				keys: ["ArrowUp", "="],
-				listener: () => speedReader.wordsPerMinute += wpmChangeRate,
-			}),
-			createOnKeydown({
-				keys: ["ArrowDown", "-"],
-				listener: () => speedReader.wordsPerMinute -= wpmChangeRate,
-			}),
-			createOnKeydown({
-				keys: "r",
-				caseSensitive: false,
-				listener: () => speedReader.rewindParagraphs(),
-			}),
-			createOnKeydown({
-				keys: "t",
-				caseSensitive: false,
-				listener: () => speedReader.paragraph.alignChunkTextToTop(),
-			}),
-			createOnKeydown({
-				keys: "n",
-				caseSensitive: false,
-				listener: () => openNewText.click(),
-			}),
-			createOnKeydown({
-				keys: "s",
-				caseSensitive: false,
-				listener: () => openSettings.click(),
-			}),
-			createOnKeydown({
-				keys: "c",
-				caseSensitive: false,
-				listener: () => toggleControls.click(),
-			}),
-		],
-		on: true,
-	});
-	speedReader.settings = storage.getItem("settings") ?? defaultSettings;
+	const read = byId$1("read");
+	const text = byId$1("text");
+	const settingsForm = byId$1("settings");
+	const openNewText = byId$1("open-new-text");
+	const openSettings = byId$1("open-settings");
+	const toggleControls = byId$1("toggle-controls");
+	const totalWords = byId$1("total-words");
+	const currentWpm = byId$1("current-wpm");
+	const shortcuts = createshortcutsEventsManager(
+		speedReader, openNewText, openSettings, toggleControls
+	);
+	initializeSettings(speedReader, ui, storage, defaultSettings);
 	totalWords.textContent = speedReader.totalWords ?? 0;
 	currentWpm.textContent = speedReader.wordsPerMinute;
 	read.addEventListener("click", () => {
@@ -1576,22 +1647,22 @@
 		modal.addEventListener("modal-opened", () => {
 			isPaused = speedReader.isPaused;
 			speedReader.isPaused = true;
-			shortcutsManager.off();
+			shortcuts.off();
 		});
 		modal.addEventListener("modal-closed", () => {
 			speedReader.isPaused = isPaused;
-			shortcutsManager.on();
+			shortcuts.on();
 		});
 	}
-	byId("clear-text").addEventListener("click", (e) => {
+	byId$1("clear-text").addEventListener("click", (e) => {
 		e.preventDefault();
 		text.value = "";
 		text.focus();
 	});
-	byId("paste-text").addEventListener("click", async (e) => {
+	byId$1("paste-text").addEventListener("click", async (e) => {
 		try {
 			e.preventDefault();
-			if ("clipboard" in navigator) {
+			if (navigator?.clipboard?.readText) {
 				text.value = await navigator.clipboard.readText();
 				text.focus();
 			}
@@ -1599,34 +1670,32 @@
 			console.error(error);
 		}
 	});
-	byId("new-text").addEventListener("submit", (e) => {
+	byId$1("new-text").addEventListener("submit", (e) => {
 		e.preventDefault();
 		if (text.value.trim().length > 0) {
 			speedReader.text = text.value;
 			totalWords.textContent = speedReader.totalWords;
 		}
 	});
+	byId$1("reset").addEventListener("click", (e) => {
+		e.preventDefault();
+		speedReader.rewindParagraphs();
+	});
 	openSettings.addEventListener("click", () => {
-		populateForm(settingsForm, speedReader.settings);
+		populateForm(
+			settingsForm,
+			{
+				...speedReader.settings,
+				...getUiStyles(ui),
+			},
+		);
 	});
 	settingsForm.addEventListener("submit", (e) => {
 		e.preventDefault();
-		speedReader.settings = form2object(e.target);
-		storage.setItem("settings", JSON.stringify(speedReader.settings));
+		const settings = form2object(e.target);
+		speedReader.settings = settings;
+		setUiStyles(ui, settings);
+		storage.setItem("settings", JSON.stringify(settings));
 	});
-
-	/**
-	 * @returns {SpeedReader}
-	 */
-	function getSpeedReader() {
-		return byId("speed-reader");
-	}
-
-	/**
-	 * @returns {CustomModal[]}
-	 */
-	function getCustomModals() {
-		return $$('[is=custom-modal]');
-	}
 
 })();
