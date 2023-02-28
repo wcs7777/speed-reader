@@ -69,7 +69,7 @@ export class ChunkText extends HTMLSpanElement {
 	 * @param {string} newText
 	 */
 	set text(newText) {
-		this.textContent = newText.trim();
+		this.textContent = " " + newText.trim();
 	}
 
 	/**
