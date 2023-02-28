@@ -72,6 +72,7 @@ export class SpeedReader extends HTMLDivElement {
 		);
 		this.isPaused = this.isPaused ?? false;
 		this.classList.add("speed-reader");
+		this.isReading = false;
 	}
 
 	connectedCallback() {
@@ -123,18 +124,23 @@ export class SpeedReader extends HTMLDivElement {
 	}
 
 	async startReading() {
-		try {
-			let milliseconds;
-			while ((milliseconds = this.nextMilliseconds()) > 0) {
-				await sleep(milliseconds);
-				while (this.isPaused) {
-					await sleep(100);
+		if (!this.isReading) {
+			try {
+				this.isReading = true;
+				let milliseconds;
+				while ((milliseconds = this.nextMilliseconds()) > 0) {
+					await sleep(milliseconds);
+					while (this.isPaused) {
+						await sleep(500);
+					}
 				}
+				this.rewindParagraphs();
+			} catch (error) {
+				console.error(error);
+			} finally {
+				this.isPaused = true;
+				this.isReading = false;
 			}
-			this.rewindParagraphs();
-			this.isPaused = true;
-		} catch (error) {
-			console.error(error);
 		}
 	}
 
@@ -268,7 +274,7 @@ export class SpeedReader extends HTMLDivElement {
 		if (!boolEqualsLoose(this._isPaused, paused)) {
 			this._isPaused = paused;
 			this.setAttribute(attrs.isPaused, paused);
-			if (!this.isPaused && !this.isParagraphInRange()) {
+			if (!this.isReading) {
 				this.startReading().catch(console.error);
 			}
 			this.dispatchEvent(
