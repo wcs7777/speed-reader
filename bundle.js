@@ -1563,11 +1563,11 @@
 					listener: () => speedReader.isPaused = !speedReader.isPaused,
 				}),
 				createOnKeydown({
-					keys: ["ArrowUp", "="],
+					keys: ["ArrowUp", "=", "["],
 					listener: () => speedReader.wordsPerMinute += wpmChangeRate,
 				}),
 				createOnKeydown({
-					keys: ["ArrowDown", "-"],
+					keys: ["ArrowDown", "-", "]"],
 					listener: () => speedReader.wordsPerMinute -= wpmChangeRate,
 				}),
 				createOnKeydown({
