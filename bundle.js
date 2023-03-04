@@ -1049,7 +1049,7 @@
 			const length = this.paragraph?.nextChunkText()?.text.length;
 			if (length !== undefined) {
 				milliseconds += chunkTextMs(length, this.charactersPerSecond);
-				if (!this.paragraph.hasNextChunkText()) {
+				if (this.settings.slightPause && !this.paragraph.hasNextChunkText()) {
 					milliseconds += 500;
 				}
 			} else {
