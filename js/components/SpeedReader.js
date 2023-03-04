@@ -151,13 +151,13 @@ export class SpeedReader extends HTMLDivElement {
 		let milliseconds = 0;
 		if (!this.paragraph?.hasNextChunkText()) {
 			this.nextParagraph();
-			if (this.settings.slightPause) {
-				milliseconds += 100;
-			}
 		}
 		const length = this.paragraph?.nextChunkText()?.text.length;
 		if (length !== undefined) {
 			milliseconds += chunkTextMs(length, this.charactersPerSecond);
+			if (!this.paragraph.hasNextChunkText()) {
+				milliseconds += 500;
+			}
 		} else {
 			milliseconds = 0;
 		}
