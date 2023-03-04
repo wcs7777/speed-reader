@@ -1558,7 +1558,7 @@
 					listener: () => speedReader.toNextChunkText(),
 				}),
 				createOnKeydown({
-					keys: [" ", "k"],
+					keys: [" ", "k", "Enter"],
 					caseSensitive: false,
 					listener: () => speedReader.isPaused = !speedReader.isPaused,
 				}),
