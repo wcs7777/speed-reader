@@ -1168,7 +1168,7 @@
 			if (!boolEqualsLoose(this._isPaused, paused)) {
 				this._isPaused = paused;
 				this.setAttribute(attrs.isPaused, paused);
-				if (!this.isReading) {
+				if (!this.isPaused && !this.isReading) {
 					this.startReading().catch(console.error);
 				}
 				this.dispatchEvent(
