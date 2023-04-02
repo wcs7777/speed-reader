@@ -119,7 +119,7 @@ export class SpeedReader extends HTMLDivElement {
 	 */
 	paragraphIndexChangeCallback(oldCurrent, newCurrent) {
 		oldCurrent.value?.rewindChunkTexts();
-		newCurrent.value?.assureIntoViewport();
+		newCurrent.value?.assureVisibility(this);
 		this.setAttribute(attrs.paragraphIndex, newCurrent.index);
 	}
 

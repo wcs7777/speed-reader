@@ -28,6 +28,24 @@ export function $$(selectors, parent=document) {
 }
 
 /**
+ * @param {HTMLElement} element
+ * @param {HTMLElement} parent
+ * @returns {boolean}
+ */
+export function isElementVisible(element, parent=document.body) {
+	const elementRect = element.getBoundingClientRect();
+	const parentRect = parent.getBoundingClientRect();
+	console.log({ elementRect, parentRect });
+	return (
+		elementRect.top >= parentRect.top &&
+		elementRect.left >= parentRect.left &&
+		elementRect.right <= parentRect.right &&
+		elementRect.bottom <= parentRect.bottom &&
+		true
+	);
+}
+
+/**
  * @param {HTMLFormElement} form
  * @returns {object}
  */

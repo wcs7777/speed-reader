@@ -160,6 +160,24 @@
 	}
 
 	/**
+	 * @param {HTMLElement} element
+	 * @param {HTMLElement} parent
+	 * @returns {boolean}
+	 */
+	function isElementVisible(element, parent=document.body) {
+		const elementRect = element.getBoundingClientRect();
+		const parentRect = parent.getBoundingClientRect();
+		console.log({ elementRect, parentRect });
+		return (
+			elementRect.top >= parentRect.top &&
+			elementRect.left >= parentRect.left &&
+			elementRect.right <= parentRect.right &&
+			elementRect.bottom <= parentRect.bottom &&
+			true
+		);
+	}
+
+	/**
 	 * @param {HTMLFormElement} form
 	 * @returns {object}
 	 */
@@ -757,12 +775,17 @@
 			);
 		}
 
-		assureIntoViewport() {
-			this.scrollIntoView({
-				behavior: "smooth",
-				block: "nearest",
-				inline: "nearest",
-			});
+		/**
+		 * @param {HTMLElement} parent
+		 */
+		assureVisibility(parent=document.body) {
+			if (!isElementVisible(this, parent)) {
+				this.scrollIntoView({
+					behavior: "smooth",
+					block: "start",
+					inline: "start",
+				});
+			}
 		}
 
 		alignChunkTextToTop() {
@@ -1013,7 +1036,7 @@
 		 */
 		paragraphIndexChangeCallback(oldCurrent, newCurrent) {
 			oldCurrent.value?.rewindChunkTexts();
-			newCurrent.value?.assureIntoViewport();
+			newCurrent.value?.assureVisibility(this);
 			this.setAttribute(attrs.paragraphIndex, newCurrent.index);
 		}
 

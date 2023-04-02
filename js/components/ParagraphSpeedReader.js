@@ -1,4 +1,11 @@
-import { $$, createTemplate, removeAllChildren, tag, templateContent } from "../utils/dom.js";
+import {
+	$$,
+	createTemplate,
+	isElementVisible,
+	removeAllChildren,
+	tag,
+	templateContent
+} from "../utils/dom.js";
 import Walker from "../utils/Walker.js";
 import { ChunkText } from "./ChunkText.js";
 
@@ -63,12 +70,17 @@ export class ParagraphSpeedReader extends HTMLParagraphElement {
 		);
 	}
 
-	assureIntoViewport() {
-		this.scrollIntoView({
-			behavior: "smooth",
-			block: "nearest",
-			inline: "nearest",
-		});
+	/**
+	 * @param {HTMLElement} parent
+	 */
+	assureVisibility(parent=document.body) {
+		if (!isElementVisible(this, parent)) {
+			this.scrollIntoView({
+				behavior: "smooth",
+				block: "start",
+				inline: "start",
+			});
+		}
 	}
 
 	alignChunkTextToTop() {
