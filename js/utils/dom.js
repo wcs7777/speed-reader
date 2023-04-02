@@ -35,7 +35,6 @@ export function $$(selectors, parent=document) {
 export function isElementVisible(element, parent=document.body) {
 	const elementRect = element.getBoundingClientRect();
 	const parentRect = parent.getBoundingClientRect();
-	console.log({ elementRect, parentRect });
 	return (
 		elementRect.top >= parentRect.top &&
 		elementRect.left >= parentRect.left &&
