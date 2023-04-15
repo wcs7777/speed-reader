@@ -158,8 +158,6 @@ export class SpeedReader extends HTMLDivElement {
 			if (this.settings.slightPause && !this.paragraph.hasNextChunkText()) {
 				milliseconds += 500;
 			}
-		} else {
-			milliseconds = 0;
 		}
 		return milliseconds;
 	}
