@@ -23,7 +23,7 @@ import {
 	ParagraphSpeedReader
 } from "./ParagraphSpeedReader.js";
 
-const averageWordSize = 5.7;
+const averageWordSize = 6;
 const attrs = {
 	isPaused: "data-is-paused",
 	paragraphIndex: "data-paragraph-index",
