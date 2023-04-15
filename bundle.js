@@ -939,7 +939,7 @@
 		"paragraph-speed-reader", ParagraphSpeedReader, { extends: "p" }
 	);
 
-	const averageWordSize = 5.7;
+	const averageWordSize = 6;
 	const attrs = {
 		isPaused: "data-is-paused",
 		paragraphIndex: "data-paragraph-index",
@@ -1074,8 +1074,6 @@
 				if (this.settings.slightPause && !this.paragraph.hasNextChunkText()) {
 					milliseconds += 500;
 				}
-			} else {
-				milliseconds = 0;
 			}
 			return milliseconds;
 		}
